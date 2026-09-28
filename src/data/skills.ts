@@ -1,12 +1,25 @@
 import type { SkillCategory, SkillTerminal } from './types';
 
+// Merged from the resume's Technical Skills and CLAUDE_BUILD_CONTEXT.md.
 export const skillCategories: SkillCategory[] = [
-  { id: 'programming', title: 'Programming', items: ['Python', 'C++', 'SQL'] },
-  { id: 'data', title: 'Data Science', items: ['Pandas', 'NumPy', 'Matplotlib', 'Seaborn', 'EDA', 'Statistics'] },
-  { id: 'ml', title: 'Machine Learning', items: ['Scikit-learn', 'XGBoost', 'Feature Engineering', 'Model Evaluation', 'SHAP'] },
-  { id: 'analytics', title: 'Analytics', items: ['Demand Forecasting', 'Time-Series Analysis', 'ETA Prediction', 'Logistics Analytics'] },
+  { id: 'programming', title: 'Languages', items: ['Python', 'C++', 'SQL'] },
+  {
+    id: 'ml', title: 'Machine Learning',
+    items: ['scikit-learn', 'XGBoost', 'SHAP', 'Regression', 'Classification', 'Feature Engineering', 'Model Evaluation', 'Hyperparameter Tuning'],
+  },
+  {
+    id: 'data', title: 'Data Science',
+    items: ['pandas', 'NumPy', 'Matplotlib', 'Seaborn', 'Statistical Analysis', 'Exploratory Data Analysis', 'Data Visualization'],
+  },
+  {
+    id: 'analytics', title: 'Forecasting & Geospatial',
+    items: ['Time-Series Forecasting', 'Recursive CV', 'Demand Forecasting', 'ETA Prediction', 'Geospatial Analysis', 'Haversine Distance', 'BallTree', 'H3'],
+  },
   { id: 'dev', title: 'Development', items: ['Streamlit', 'React', 'Tailwind CSS', 'Git', 'GitHub'] },
-  { id: 'tools', title: 'Tools', items: ['Jupyter', 'VS Code', 'MySQL', 'WSL', 'n8n', 'Figma', 'Canva'] },
+  {
+    id: 'tools', title: 'Tools',
+    items: ['Jupyter Notebook', 'Google Colab', 'Kaggle', 'VS Code', 'MySQL', 'WSL', 'n8n', 'Figma', 'Canva'],
+  },
 ];
 
 export const skillCategoryById = Object.fromEntries(skillCategories.map((c) => [c.id, c]));
@@ -14,7 +27,7 @@ export const skillCategoryById = Object.fromEntries(skillCategories.map((c) => [
 /** The three terminals in the Skills Database room. */
 export const skillTerminals: SkillTerminal[] = [
   { id: 'code-data', title: 'Code & Data', categories: ['programming', 'data'] },
-  { id: 'ml-analytics', title: 'ML & Analytics', categories: ['ml', 'analytics'] },
+  { id: 'ml-analytics', title: 'ML & Forecasting', categories: ['ml', 'analytics'] },
   { id: 'build-tools', title: 'Build & Tools', categories: ['dev', 'tools'] },
 ];
 

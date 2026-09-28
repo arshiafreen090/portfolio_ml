@@ -1,6 +1,7 @@
 export type ProjectId = 'eta' | 'meal' | 'heart' | 'tiny' | 'resync';
 
-export type ProjectStatus = 'Completed' | 'Learning / Collection' | 'In Development';
+/** Only 'In Development' is ever shown as a label. */
+export type ProjectStatus = 'Shipped' | 'Collection' | 'In Development';
 
 export interface ProjectLinks {
   github?: string;
@@ -10,6 +11,19 @@ export interface ProjectLinks {
 export interface SubProject {
   title: string;
   points: string[];
+}
+
+/** A group of verified tools/methods, e.g. { label: 'Models', items: ['XGBoost'] }. */
+export interface TechGroup {
+  label: string;
+  items: string[];
+}
+
+/** A verified evaluation figure. `note` explains what it is measured on. */
+export interface Metric {
+  label: string;
+  value: string;
+  note?: string;
 }
 
 export interface Project {
@@ -25,9 +39,11 @@ export interface Project {
   parts?: SubProject[];
   /** Ideas that are planned but NOT built. Always rendered as "planned". */
   planned?: string[];
-  /** Verified results only. Leave undefined when there are none — the section is omitted. */
-  results?: string[];
-  /** Only tools confirmed for this project. Empty = section omitted. */
+  /** Verified model performance only (from the resume / repo). Omitted when none. */
+  metrics?: Metric[];
+  /** Verified technical breakdown. */
+  tech: TechGroup[];
+  /** Short list for cards. */
   stack: string[];
   links: ProjectLinks;
   /** Shown under the links when a project has none yet. */
@@ -49,9 +65,25 @@ export interface SkillTerminal {
 
 export interface Design {
   id: string;
+  number: number;
+  /** e.g. "Skincare Ad" */
+  category: string;
+  /** e.g. "Fashwash Commercial" */
   title: string;
   description: string;
-  /** Path under public/, e.g. "assets/gallery/poster-1.webp". null = placeholder. */
+  /** Where the real work lives (Drive / Canva). */
+  source: string;
+  sourceLabel: string;
+  /** Path under public/ for the REAL artwork. null until supplied. */
   image: string | null;
+  /** Path under public/ for the stand-in illustration shown until `image` is set. */
+  placeholder: string;
   alt: string;
+}
+
+export interface Experience {
+  org: string;
+  role: string;
+  dates: string;
+  points: string[];
 }

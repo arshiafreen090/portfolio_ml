@@ -159,21 +159,6 @@ const statics: Partial<Record<PropKind, () => Sprite>> = {
     rect(ctx, 42, 12, 8, 11, P.navyDeep); rect(ctx, 43, 13, 6, 9, P.cyanSoft);
     rect(ctx, 44, 6, 1, 7, P.pink); rect(ctx, 46, 8, 1, 5, P.blue); rect(ctx, 47, 5, 1, 8, P.peach);
   }),
-  easel: () => paint('easel', 50, 88, (ctx, w, h) => {
-    for (const [x0, x1] of [[10, 18], [40, 32]]) {
-      for (let y = 30; y < h; y++) {
-        const t = (y - 30) / (h - 30);
-        rect(ctx, x1 + (x0 - x1) * t, y, 3, 1, P.woodDeep);
-      }
-    }
-    rect(ctx, w / 2 - 1, 30, 3, h - 34, P.woodDeep);
-    frame(ctx, 6, 4, w - 12, 44, P.paper, P.navyDeep, 1, 2);
-    rect(ctx, 9, 30, w - 18, 15, P.lavenderSoft);
-    disc(ctx, 30, 20, 7, P.peachSoft);
-    rect(ctx, 12, 32, 12, 2, P.leaf); rect(ctx, 22, 35, 14, 2, P.pinkSoft);
-    rect(ctx, 4, 48, w - 8, 3, P.woodDeep);
-    rect(ctx, 30, 44, 12, 5, P.navyDeep); rect(ctx, 31, 45, 3, 3, P.pink); rect(ctx, 35, 45, 3, 3, P.blue); rect(ctx, 39, 45, 2, 3, P.peach);
-  }),
   seat: () => paint('seat', 34, 44, (ctx, w, h) => {
     rect(ctx, w / 2 - 2, h - 12, 4, 10, P.navy);
     rect(ctx, w / 2 - 10, h - 3, 20, 3, P.navyDeep);
@@ -206,21 +191,23 @@ const statics: Partial<Record<PropKind, () => Sprite>> = {
     }
     rect(ctx, 2, h - 8, w - 4, 6, P.navyDeep);
   }),
-  workbench: () => paint('workbench', 72, 60, (ctx, w, h) => {
-    rect(ctx, 0, 24, w, 6, P.navyDeep);
-    rect(ctx, 1, 25, w - 2, 4, P.lavender);
-    rect(ctx, 1, 25, w - 2, 1, P.lavenderSoft);
-    rect(ctx, 4, 30, 4, h - 30, P.navy); rect(ctx, w - 8, 30, 4, h - 30, P.navy);
-    rect(ctx, 4, h - 14, w - 8, 3, P.navy);
-    frame(ctx, 12, h - 11, 20, 10, P.peach, P.navyDeep, 0, 1);
-    // laptop
-    rect(ctx, 8, 6, 26, 17, P.navyDeep); rect(ctx, 10, 8, 22, 13, P.screen);
-    rect(ctx, 6, 22, 30, 3, P.navyDeep);
-    rect(ctx, 12, 11, 12, 1, P.cyan); rect(ctx, 12, 14, 16, 1, P.mint); rect(ctx, 12, 17, 9, 1, P.peach);
-    // toolbox + wrench
-    frame(ctx, 42, 12, 24, 13, P.pink, P.navyDeep, 1, 1);
-    rect(ctx, 50, 9, 8, 3, P.navyDeep);
-    rect(ctx, 44, 16, 20, 1, P.pinkDeep);
+  cone: () => paint('cone', 14, 18, (ctx, w, h) => {
+    rect(ctx, 0, h - 3, w, 3, P.navyDeep);
+    for (let i = 0; i < h - 3; i++) {
+      const ww = Math.max(2, Math.round((i / (h - 3)) * (w - 4)) + 2);
+      rect(ctx, w / 2 - ww / 2, i, ww, 1, i > 5 && i < 9 ? P.paper : P.peach);
+    }
+  }),
+  plinth: () => paint('plinth', 30, 58, (ctx, w, h) => {
+    frame(ctx, 2, 26, w - 4, h - 26, P.hull, P.navyDeep, 1, 1);
+    rect(ctx, 3, 27, w - 6, 2, P.hullLight);
+    rect(ctx, w - 8, 29, 4, h - 31, P.hullShade);
+    // a small abstract sculpture
+    ellipse(ctx, w / 2, 16, 8, 9, P.navyDeep);
+    ellipse(ctx, w / 2, 16, 7, 8, P.lavender);
+    ellipse(ctx, w / 2 - 2, 13, 3, 3, P.lavenderSoft);
+    rect(ctx, w / 2 - 5, 23, 10, 3, P.navyDeep);
+    disc(ctx, w / 2 + 5, 6, 3, P.pink);
   }),
   beanBag: () => paint('beanBag', 46, 30, (ctx, w, h) => {
     ellipse(ctx, w / 2, h - 11, w / 2, 11, P.navyDeep);
@@ -284,6 +271,9 @@ export function drawProp(ctx: Ctx, p: Prop, near: number, t: number) {
     rect(ctx, bx, shelfY - 16 - lift, 4, 15, P.peach);
     rect(ctx, bx, shelfY - 13 - lift, 4, 1, P.paper);
     glow(ctx, bx + 2, shelfY - 8, 10, 12, P.warm, near * 0.5);
+  } else if (p.kind === 'plinth' && near > 0.3) {
+    const k = Math.floor(t * 6) % 4;
+    if (k < 2) { rect(ctx, left + 11, top + 8, 2, 2, P.paper); rect(ctx, left + 10, top + 9, 4, 1, P.paper); }
   } else if (p.kind === 'artDesk') {
     // tiny display: slow colour-swatch cycle
     const sx = left + 60, sy = top + 2;

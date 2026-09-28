@@ -1,9 +1,9 @@
 // The ship layout: rooms, corridors, doors and interactive objects.
 // All coordinates are world units (1 unit = 1 source pixel of Tobby's sprite).
 //
-// Rooms are drawn in a 3/4 top-down view: the top WALL band of every room is
-// the back wall (not walkable); the rest is floor. Corridors are floor strips
-// that overlap rooms where a doorway is.
+// Rooms are drawn in a 3/4 top-down view: the top band of every room is the
+// back wall (not walkable; height = wallOf(room)); the rest is floor.
+// Corridors are floor strips that overlap rooms where a doorway is.
 //
 // Layout (west → east): Cockpit (nose) — main corridor — Project Lab above /
 // Design Archive below — Navigation Hub — Skills Database above / About below —
@@ -12,7 +12,6 @@
 // Interactables only reference content by id — the content itself lives in src/data/.
 // Purely visual furniture lives in ./decor.ts.
 
-import type { ProjectId } from '../../data/types';
 
 export interface Rect { x: number; y: number; w: number; h: number }
 export interface Point { x: number; y: number }
@@ -24,9 +23,15 @@ export interface Room {
   name: string;
   rect: Rect;
   spawn: Point;
+  /** back-wall height; defaults to WALL */
+  wall?: number;
 }
 
-export type InteractKind = 'project' | 'skills' | 'about' | 'contact' | 'poster' | 'map' | 'briefing';
+export type InteractKind =
+  | 'project' | 'skills' | 'about' | 'contact' | 'poster' | 'map' | 'briefing' | 'gallery' | 'telescope';
+
+/** Which way an object faces — decides where Tobby stands to use it. */
+export type Facing = 'down' | 'left' | 'right';
 
 export interface Interactable {
   id: string;
@@ -39,6 +44,7 @@ export interface Interactable {
   base: Point;
   /** visual footprint (w × h, drawn up from base) */
   size: { w: number; h: number };
+  facing: Facing;
   /** wall-mounted objects have no collision */
   solid: Rect | null;
   /** Tobby's feet must be inside this to interact */
@@ -57,18 +63,23 @@ export interface Door {
 }
 
 export const WALL = 80;
-export const WORLD: Rect = { x: 0, y: 0, w: 2360, h: 1100 };
+const GALLERY_WALL = 128;
+export const WORLD: Rect = { x: 0, y: 0, w: 2360, h: 1140 };
 
 export const rooms: Room[] = [
   { id: 'cockpit', name: 'Cockpit', rect: { x: 80, y: 360, w: 360, h: 380 }, spawn: { x: 330, y: 650 } },
-  { id: 'lab', name: 'Project Lab', rect: { x: 520, y: 40, w: 620, h: 400 }, spawn: { x: 830, y: 390 } },
-  { id: 'gallery', name: 'Design Archive', rect: { x: 560, y: 690, w: 540, h: 360 }, spawn: { x: 830, y: 820 } },
+  { id: 'lab', name: 'Project Lab', rect: { x: 520, y: 40, w: 620, h: 400 }, spawn: { x: 830, y: 400 } },
+  {
+    id: 'gallery', name: 'Design Archive', rect: { x: 540, y: 690, w: 580, h: 400 }, spawn: { x: 830, y: 850 },
+    wall: GALLERY_WALL,
+  },
   { id: 'hub', name: 'Navigation Hub', rect: { x: 1180, y: 330, w: 400, h: 460 }, spawn: { x: 1380, y: 740 } },
   { id: 'skills', name: 'Skills Database', rect: { x: 1620, y: 40, w: 620, h: 400 }, spawn: { x: 1930, y: 400 } },
   { id: 'about', name: 'About + Contact', rect: { x: 1660, y: 690, w: 540, h: 360 }, spawn: { x: 1930, y: 820 } },
 ];
 
 export const roomById = Object.fromEntries(rooms.map((r) => [r.id, r])) as Record<RoomId, Room>;
+export const wallOf = (room: Room | RoomId) => (typeof room === 'string' ? roomById[room] : room).wall ?? WALL;
 
 /** Main corridor segments (drawn as the ship's central walkway). */
 export const spines: Rect[] = [
@@ -79,7 +90,7 @@ export const spines: Rect[] = [
 /** Short vertical links between the main corridor and the rooms. */
 export const connectors: Rect[] = [
   { x: 790, y: 420, w: 80, h: 120 }, // lab
-  { x: 790, y: 590, w: 80, h: 190 }, // archive (through its back wall)
+  { x: 790, y: 590, w: 80, h: 690 + GALLERY_WALL + 10 - 590 }, // archive (through its tall back wall)
   { x: 1890, y: 420, w: 80, h: 120 }, // skills
   { x: 1890, y: 590, w: 80, h: 190 }, // about (through its back wall)
 ];
@@ -89,7 +100,7 @@ export const corridors: Rect[] = [...spines, ...connectors];
 export const doors: Door[] = [
   { id: 'cockpit-e', rect: { x: 432, y: 520, w: 16, h: 90 }, axis: 'v', kind: 'normal' },
   { id: 'lab-s', rect: { x: 790, y: 432, w: 80, h: 16 }, axis: 'h', kind: 'transition' },
-  { id: 'gallery-n', rect: { x: 790, y: 690, w: 80, h: WALL }, axis: 'h', kind: 'transition' },
+  { id: 'gallery-n', rect: { x: 790, y: 690, w: 80, h: GALLERY_WALL }, axis: 'h', kind: 'transition' },
   { id: 'hub-w', rect: { x: 1172, y: 520, w: 16, h: 90 }, axis: 'v', kind: 'normal' },
   { id: 'hub-e', rect: { x: 1572, y: 520, w: 16, h: 90 }, axis: 'v', kind: 'normal' },
   { id: 'skills-s', rect: { x: 1890, y: 432, w: 80, h: 16 }, axis: 'h', kind: 'transition' },
@@ -99,65 +110,75 @@ export const doors: Door[] = [
 
 /** Walkable floor = room floors (minus back wall) + corridors. */
 export const floors: Rect[] = [
-  ...rooms.map((r) => ({ x: r.rect.x, y: r.rect.y + WALL, w: r.rect.w, h: r.rect.h - WALL })),
+  ...rooms.map((r) => ({ x: r.rect.x, y: r.rect.y + wallOf(r), w: r.rect.w, h: r.rect.h - wallOf(r) })),
   ...corridors,
 ];
 
 function standing(
   id: string, kind: InteractKind, refId: string, room: RoomId, label: string,
-  cx: number, baseY: number, w: number, h: number,
+  cx: number, baseY: number, w: number, h: number, facing: Facing = 'down',
 ): Interactable {
+  const zone = facing === 'down'
+    ? { x: cx - w / 2 - 22, y: baseY - 30, w: w + 44, h: 86 }
+    : facing === 'left'
+      ? { x: cx - w / 2 - 72, y: baseY - 64, w: 76, h: 96 }
+      : { x: cx + w / 2 - 4, y: baseY - 64, w: 76, h: 96 };
   return {
-    id, kind, refId, room, label,
+    id, kind, refId, room, label, facing,
     base: { x: cx, y: baseY },
     size: { w, h },
     solid: { x: cx - w / 2, y: baseY - 26, w, h: 26 },
-    zone: { x: cx - w / 2 - 22, y: baseY - 30, w: w + 44, h: 86 },
+    zone,
   };
 }
 
+/** Wall-mounted object whose frame hangs with its bottom at `bottomY`. */
 function wallMounted(
   id: string, kind: InteractKind, refId: string, room: RoomId, label: string,
-  cx: number, w: number, h: number,
+  cx: number, w: number, h: number, bottomY?: number,
 ): Interactable {
   const r = roomById[room].rect;
-  const floorTop = r.y + WALL;
+  const floorTop = r.y + wallOf(room);
   return {
-    id, kind, refId, room, label,
-    base: { x: cx, y: floorTop - 10 },
+    id, kind, refId, room, label, facing: 'down',
+    base: { x: cx, y: bottomY ?? floorTop - 10 },
     size: { w, h },
     solid: null,
-    zone: { x: cx - w / 2 - 10, y: floorTop, w: w + 20, h: 70 },
+    zone: { x: cx - Math.max(w, 44) / 2 - 8, y: floorTop, w: Math.max(w, 44) + 16, h: 70 },
   };
 }
-
-const LAB_MACHINES: { id: ProjectId; label: string }[] = [
-  { id: 'eta', label: 'Delivery ETA Prediction' },
-  { id: 'meal', label: 'Meal Demand Forecasting' },
-  { id: 'heart', label: 'Heart Disease Prediction' },
-  { id: 'tiny', label: 'Tiny Projects' },
-  { id: 'resync', label: 'ReSync AI' },
-];
 
 export const interactables: Interactable[] = [
   // Cockpit — flight console opens the welcome briefing
   standing('console-briefing', 'briefing', 'briefing', 'cockpit', 'Flight console', 170, 590, 96, 64),
-  // Project Lab — exactly five machines along the back wall
-  ...LAB_MACHINES.map((m, i) =>
-    standing(`machine-${m.id}`, 'project', m.id, 'lab', m.label, 600 + i * 115, 205, 78, 112),
-  ),
+
+  // Project Lab — five distinct workstations spread around the room
+  standing('machine-eta', 'project', 'eta', 'lab', 'Delivery ETA Prediction', 632, 200, 130, 96),
+  standing('machine-meal', 'project', 'meal', 'lab', 'Meal Demand Forecasting', 1040, 190, 88, 124),
+  standing('machine-resync', 'project', 'resync', 'lab', 'ReSync AI', 830, 256, 100, 104),
+  standing('machine-tiny', 'project', 'tiny', 'lab', 'Tiny Projects', 592, 372, 112, 74, 'right'),
+  standing('machine-heart', 'project', 'heart', 'lab', 'Heart Disease Prediction', 1072, 368, 92, 96, 'left'),
+
   // Skills Database — three terminals in a shallow arc
   standing('terminal-code-data', 'skills', 'code-data', 'skills', 'Code & Data', 1770, 270, 70, 96),
-  standing('terminal-ml-analytics', 'skills', 'ml-analytics', 'skills', 'ML & Analytics', 1930, 300, 70, 96),
+  standing('terminal-ml-analytics', 'skills', 'ml-analytics', 'skills', 'ML & Forecasting', 1930, 300, 70, 96),
   standing('terminal-build-tools', 'skills', 'build-tools', 'skills', 'Build & Tools', 2090, 270, 70, 96),
+
   // About + Contact
   wallMounted('board-about', 'about', 'about', 'about', 'About Afreen', 1760, 110, 60),
   standing('terminal-contact', 'contact', 'contact', 'about', 'Contact', 2110, 960, 64, 88),
-  // Design Archive — exactly two poster stands
-  standing('poster-1', 'poster', 'poster-1', 'gallery', 'Poster 01', 700, 900, 72, 108),
-  standing('poster-2', 'poster', 'poster-2', 'gallery', 'Poster 02', 960, 900, 72, 108),
-  // Navigation Hub — holographic globe (teleport map)
+
+  // Design Archive — five framed works (four on the back wall, one on a display wall) + gallery computer
+  wallMounted('art-internship', 'poster', 'internship', 'gallery', 'Internship Experience', 632, 112, 86, 800),
+  wallMounted('art-brand', 'poster', 'brand', 'gallery', 'Personal Brand', 734, 58, 58, 770),
+  wallMounted('art-skincare', 'poster', 'skincare', 'gallery', 'Fashwash Commercial', 930, 66, 88, 796),
+  wallMounted('art-nike', 'poster', 'nike', 'gallery', 'NIKE AIR', 1044, 74, 98, 806),
+  standing('art-assignment', 'poster', 'assignment', 'gallery', 'Internship Selection Task', 652, 1012, 150, 118),
+  standing('gallery-computer', 'gallery', 'gallery', 'gallery', 'Gallery computer', 850, 968, 124, 104),
+
+  // Navigation Hub — holographic globe (teleport map) and a telescope
   standing('console-nav', 'map', 'map', 'hub', 'Navigation globe', 1380, 670, 100, 124),
+  standing('telescope', 'telescope', 'telescope', 'hub', 'Telescope', 1484, 500, 54, 80),
 ];
 
 export const inRect = (p: Point, r: Rect) => p.x >= r.x && p.x < r.x + r.w && p.y >= r.y && p.y < r.y + r.h;

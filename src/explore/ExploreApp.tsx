@@ -5,10 +5,13 @@ import { Hud, RoomToast } from './Hud';
 import { InteractionPrompt } from './InteractionPrompt';
 import { TouchControls } from './TouchControls';
 import { WelcomeCard } from './WelcomeCard';
+import { music } from './music';
 import { AboutPopup } from './popups/AboutPopup';
 import { ContactPopup } from './popups/ContactPopup';
 import { MapPopup } from './popups/MapPopup';
-import { PosterPopup } from './popups/PosterPopup';
+import { ArtworkPopup } from './popups/ArtworkPopup';
+import { GalleryViewer } from './popups/GalleryViewer';
+import { TelescopePopup } from './popups/TelescopePopup';
 import { ProjectPopup } from './popups/ProjectPopup';
 import { SkillsPopup } from './popups/SkillsPopup';
 
@@ -47,7 +50,7 @@ export function ExploreApp() {
       onInteract: (it) => setPopup(it.kind === 'briefing' ? { kind: 'welcome' } : { kind: it.kind, refId: it.refId }),
     });
     engineRef.current = engine;
-    if (import.meta.env.DEV) (window as unknown as { __engine: Engine }).__engine = engine;
+    if (import.meta.env.DEV) Object.assign(window, { __engine: engine, __music: music });
     return () => engine.destroy();
   }, []);
 
@@ -56,10 +59,25 @@ export function ExploreApp() {
   }, [popup]);
 
   const close = useCallback(() => setPopup(null), []);
+  // leaving the welcome card is the explicit gesture that starts the music
+  const enterShip = useCallback(() => { music.start(); setPopup(null); }, []);
   const goTo = useCallback((r: RoomId) => {
     engineRef.current?.teleport(r);
+    music.start();
     setPopup(null);
   }, []);
+
+  // click / tap an object on the canvas to open it directly
+  const onCanvasClick = (e: React.MouseEvent<HTMLCanvasElement>) => {
+    if (popup) return;
+    const it = engineRef.current?.pick(e.clientX, e.clientY);
+    if (it) engineRef.current?.activate(it);
+  };
+  const onCanvasMove = (e: React.PointerEvent<HTMLCanvasElement>) => {
+    if (e.pointerType !== 'mouse') return;
+    const it = popup ? null : engineRef.current?.pick(e.clientX, e.clientY);
+    e.currentTarget.style.cursor = it ? 'pointer' : '';
+  };
 
   const blurred = popup?.kind === 'welcome';
 
@@ -70,6 +88,8 @@ export function ExploreApp() {
         className={`explore__canvas ${ready ? 'is-ready' : ''} ${blurred ? 'is-blurred' : ''}`}
         role="img"
         aria-label="Pixel-art spaceship with Tobby the cat. Use the Map button to jump between rooms."
+        onClick={onCanvasClick}
+        onPointerMove={onCanvasMove}
       />
 
       {!ready && !popup && <div className="explore__loading">Loading spaceship…</div>}
@@ -102,12 +122,18 @@ export function ExploreApp() {
         </>
       )}
 
-      <WelcomeCard open={popup?.kind === 'welcome'} onClose={close} onGoTo={goTo} />
+      <WelcomeCard open={popup?.kind === 'welcome'} onClose={enterShip} onGoTo={goTo} />
       <ProjectPopup refId={popup?.kind === 'project' ? popup.refId : null} onClose={close} />
       <SkillsPopup refId={popup?.kind === 'skills' ? popup.refId : null} onClose={close} />
       <AboutPopup open={popup?.kind === 'about'} onClose={close} />
       <ContactPopup open={popup?.kind === 'contact'} onClose={close} />
-      <PosterPopup refId={popup?.kind === 'poster' ? popup.refId : null} onClose={close} />
+      <ArtworkPopup refId={popup?.kind === 'poster' ? popup.refId : null} onClose={close} />
+      <GalleryViewer
+        open={popup?.kind === 'gallery'}
+        onClose={close}
+        onDetail={(id) => setPopup({ kind: 'poster', refId: id })}
+      />
+      <TelescopePopup open={popup?.kind === 'telescope'} onClose={close} />
       <MapPopup
         open={popup?.kind === 'map'}
         onClose={close}

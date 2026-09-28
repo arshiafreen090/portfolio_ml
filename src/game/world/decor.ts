@@ -1,15 +1,15 @@
 // Purely visual furniture and fittings. Nothing here opens a popup; some items
 // react when Tobby is near (plants sway, shelves highlight a book, lamps brighten).
 //
-// - `props`   standing objects, y-sorted with Tobby, with a small collision footprint
-// - `wallItems` things fixed to a room's back wall (windows, screens, shelves, lights…)
+// - `props`      standing objects, y-sorted with Tobby, with a small collision footprint
+// - `wallItems`  things fixed to a room's back wall (windows, screens, shelves, lights…)
 // - `floorItems` rugs, inlays, light strips and cable runs baked into the floor
 
 import type { RoomId } from './shipMap';
 
 export type PropKind =
   | 'plant' | 'plantTall' | 'planter' | 'bookshelf' | 'couch' | 'lamp' | 'sideTable'
-  | 'artDesk' | 'easel' | 'seat' | 'crates' | 'serverRack' | 'workbench' | 'beanBag';
+  | 'artDesk' | 'seat' | 'crates' | 'serverRack' | 'beanBag' | 'cone' | 'plinth';
 
 export interface Prop {
   id: string;
@@ -32,17 +32,17 @@ export const PROP_SIZE: Record<PropKind, { w: number; h: number; depth: number }
   lamp: { w: 22, h: 78, depth: 10 },
   sideTable: { w: 30, h: 34, depth: 14 },
   artDesk: { w: 100, h: 58, depth: 24 },
-  easel: { w: 50, h: 88, depth: 14 },
   seat: { w: 34, h: 44, depth: 18 },
   crates: { w: 44, h: 42, depth: 20 },
   serverRack: { w: 44, h: 104, depth: 22 },
-  workbench: { w: 72, h: 60, depth: 24 },
   beanBag: { w: 46, h: 30, depth: 20 },
+  cone: { w: 14, h: 18, depth: 8 },
+  plinth: { w: 30, h: 58, depth: 16 },
 };
 
 /** Props that respond to Tobby being close. */
 export const REACTIVE: Partial<Record<PropKind, true>> = {
-  plant: true, plantTall: true, planter: true, bookshelf: true, lamp: true, serverRack: true, beanBag: true,
+  plant: true, plantTall: true, planter: true, bookshelf: true, lamp: true, serverRack: true, beanBag: true, plinth: true,
 };
 
 export const props: Prop[] = [
@@ -53,12 +53,15 @@ export const props: Prop[] = [
   { id: 'ck-plant-2', kind: 'plant', room: 'cockpit', x: 108, y: 728 },
   { id: 'ck-crates', kind: 'crates', room: 'cockpit', x: 408, y: 732 },
 
-  // Project Lab
-  { id: 'lab-rack', kind: 'serverRack', room: 'lab', x: 548, y: 330 },
-  { id: 'lab-bench', kind: 'workbench', room: 'lab', x: 1100, y: 340 },
+  // Project Lab — rack + shelf along the back wall, construction cones by ReSync
+  { id: 'lab-rack', kind: 'serverRack', room: 'lab', x: 738, y: 152 },
+  { id: 'lab-shelf', kind: 'bookshelf', room: 'lab', x: 932, y: 150 },
+  { id: 'lab-cone-1', kind: 'cone', room: 'lab', x: 768, y: 262 },
+  { id: 'lab-cone-2', kind: 'cone', room: 'lab', x: 893, y: 262 },
+  { id: 'lab-crates', kind: 'crates', room: 'lab', x: 1112, y: 262 },
   { id: 'lab-plant', kind: 'plantTall', room: 'lab', x: 546, y: 432 },
   { id: 'lab-plant-2', kind: 'plant', room: 'lab', x: 1118, y: 432 },
-  { id: 'lab-crates', kind: 'crates', room: 'lab', x: 1112, y: 262 },
+  { id: 'lab-plant-3', kind: 'plant', room: 'lab', x: 546, y: 240 },
 
   // Skills Database
   { id: 'sk-shelf-1', kind: 'bookshelf', room: 'skills', x: 1662, y: 196 },
@@ -67,11 +70,13 @@ export const props: Prop[] = [
   { id: 'sk-bag', kind: 'beanBag', room: 'skills', x: 2170, y: 405 },
   { id: 'sk-plant-2', kind: 'plant', room: 'skills', x: 2222, y: 330 },
 
-  // Design Archive
-  { id: 'ga-desk', kind: 'artDesk', room: 'gallery', x: 648, y: 822 },
-  { id: 'ga-easel', kind: 'easel', room: 'gallery', x: 1044, y: 836 },
-  { id: 'ga-plant', kind: 'plantTall', room: 'gallery', x: 586, y: 1042 },
-  { id: 'ga-plant-2', kind: 'plant', room: 'gallery', x: 1078, y: 1042 },
+  // Design Archive — design desk, bookshelf, a small sculpture, plants
+  { id: 'ga-desk', kind: 'artDesk', room: 'gallery', x: 1040, y: 910 },
+  { id: 'ga-shelf', kind: 'bookshelf', room: 'gallery', x: 1082, y: 1080 },
+  { id: 'ga-plinth', kind: 'plinth', room: 'gallery', x: 960, y: 1070 },
+  { id: 'ga-plant', kind: 'plantTall', room: 'gallery', x: 562, y: 866 },
+  { id: 'ga-plant-2', kind: 'plant', room: 'gallery', x: 560, y: 1084 },
+  { id: 'ga-plant-3', kind: 'plant', room: 'gallery', x: 1104, y: 850 },
 
   // About + Contact
   { id: 'ab-couch', kind: 'couch', room: 'about', x: 2072, y: 830 },
@@ -81,14 +86,15 @@ export const props: Prop[] = [
   { id: 'ab-plant', kind: 'plantTall', room: 'about', x: 1684, y: 1042 },
   { id: 'ab-plant-2', kind: 'plant', room: 'about', x: 2182, y: 1042 },
 
-  // Navigation Hub — four corner planters
+  // Navigation Hub — corner planters
   { id: 'hub-pl-1', kind: 'planter', room: 'hub', x: 1214, y: 452 },
   { id: 'hub-pl-2', kind: 'planter', room: 'hub', x: 1546, y: 452 },
   { id: 'hub-pl-3', kind: 'plantTall', room: 'hub', x: 1204, y: 784 },
   { id: 'hub-pl-4', kind: 'plantTall', room: 'hub', x: 1556, y: 784 },
 ];
 
-export type WallKind = 'window' | 'screen' | 'shelf' | 'sconce' | 'vent' | 'frame' | 'sign' | 'porthole';
+export type WallKind =
+  | 'window' | 'screen' | 'shelf' | 'sconce' | 'vent' | 'frame' | 'sign' | 'porthole' | 'spot' | 'panel' | 'fan';
 
 export type ScreenVariant = 'bigdata' | 'code' | 'chart' | 'map' | 'radar' | 'stars';
 
@@ -112,8 +118,11 @@ export const wallItems: WallItem[] = [
   // Project Lab
   { id: 'lab-sc-1', kind: 'sconce', room: 'lab', x: 548, y: 60, w: 12, h: 10 },
   { id: 'lab-sc-2', kind: 'sconce', room: 'lab', x: 1112, y: 60, w: 12, h: 10 },
-  { id: 'lab-vent-1', kind: 'vent', room: 'lab', x: 538, y: 84, w: 28, h: 14 },
-  { id: 'lab-vent-2', kind: 'vent', room: 'lab', x: 1098, y: 84, w: 28, h: 14 },
+  { id: 'lab-screen', kind: 'screen', room: 'lab', x: 796, y: 56, w: 68, h: 40, variant: 'code' },
+  { id: 'lab-panel', kind: 'panel', room: 'lab', x: 872, y: 64, w: 26, h: 30 },
+  { id: 'lab-panel-2', kind: 'panel', room: 'lab', x: 668, y: 62, w: 22, h: 30 },
+  { id: 'lab-fan', kind: 'fan', room: 'lab', x: 574, y: 70, w: 26, h: 26 },
+  { id: 'lab-vent', kind: 'vent', room: 'lab', x: 1098, y: 84, w: 28, h: 14 },
 
   // Skills Database
   { id: 'sk-big', kind: 'screen', room: 'skills', x: 1830, y: 50, w: 200, h: 60, variant: 'bigdata' },
@@ -121,12 +130,14 @@ export const wallItems: WallItem[] = [
   { id: 'sk-chart', kind: 'screen', room: 'skills', x: 2074, y: 62, w: 56, h: 38, variant: 'chart' },
   { id: 'sk-sc-1', kind: 'sconce', room: 'skills', x: 1806, y: 60, w: 12, h: 10 },
   { id: 'sk-sc-2', kind: 'sconce', room: 'skills', x: 2042, y: 60, w: 12, h: 10 },
+  { id: 'sk-fan', kind: 'fan', room: 'skills', x: 2146, y: 72, w: 24, h: 24 },
 
-  // Design Archive
-  { id: 'ga-shelf-1', kind: 'shelf', room: 'gallery', x: 600, y: 716, w: 90, h: 30, variant: 'supplies' },
-  { id: 'ga-shelf-2', kind: 'shelf', room: 'gallery', x: 930, y: 716, w: 110, h: 30, variant: 'books' },
-  { id: 'ga-sc-1', kind: 'sconce', room: 'gallery', x: 760, y: 704, w: 12, h: 10 },
-  { id: 'ga-sc-2', kind: 'sconce', room: 'gallery', x: 888, y: 704, w: 12, h: 10 },
+  // Design Archive — warm spotlights over the four wall-mounted works, a small supplies shelf
+  { id: 'ga-spot-1', kind: 'spot', room: 'gallery', x: 632, y: 698, w: 112, h: 100 },
+  { id: 'ga-spot-2', kind: 'spot', room: 'gallery', x: 734, y: 698, w: 58, h: 70 },
+  { id: 'ga-spot-3', kind: 'spot', room: 'gallery', x: 930, y: 698, w: 66, h: 96 },
+  { id: 'ga-spot-4', kind: 'spot', room: 'gallery', x: 1044, y: 698, w: 74, h: 106 },
+  { id: 'ga-shelf', kind: 'shelf', room: 'gallery', x: 1086, y: 744, w: 30, h: 28, variant: 'supplies' },
 
   // About + Contact
   { id: 'ab-win', kind: 'window', room: 'about', x: 2000, y: 702, w: 110, h: 50 },
@@ -138,6 +149,7 @@ export const wallItems: WallItem[] = [
   { id: 'hub-porthole', kind: 'porthole', room: 'hub', x: 1350, y: 338, w: 60, h: 60 },
   { id: 'hub-sc-l', kind: 'screen', room: 'hub', x: 1226, y: 344, w: 64, h: 40, variant: 'map' },
   { id: 'hub-sc-r', kind: 'screen', room: 'hub', x: 1470, y: 344, w: 64, h: 40, variant: 'radar' },
+  { id: 'hub-panel', kind: 'panel', room: 'hub', x: 1304, y: 352, w: 24, h: 30 },
   { id: 'hub-sign-l', kind: 'sign', room: 'hub', x: 1196, y: 390, w: 124, h: 14, variant: '◀ LAB · ARCHIVE' },
   { id: 'hub-sign-r', kind: 'sign', room: 'hub', x: 1440, y: 390, w: 124, h: 14, variant: 'SKILLS · ABOUT ▶' },
 ];
@@ -155,13 +167,15 @@ export interface FloorItem {
 
 export const floorItems: FloorItem[] = [
   { kind: 'strip', x: 250, y: 600, w: 190, h: 4 },
-  { kind: 'rug', x: 720, y: 292, w: 220, h: 92, color: 'lavender' },
-  { kind: 'strip', x: 560, y: 226, w: 540, h: 3 },
-  { kind: 'strip', x: 828, y: 386, w: 3, h: 54 },
+  // Lab: walkway from the door, a rug, cable runs to the workstations
+  { kind: 'strip', x: 828, y: 318, w: 3, h: 122 },
+  { kind: 'rug', x: 900, y: 300, w: 110, h: 64, color: 'lavender' },
+  { kind: 'cable', x: 736, y: 154, w: 12, h: 90 },
+  { kind: 'cable', x: 1000, y: 196, w: 12, h: 130 },
   { kind: 'strip', x: 1928, y: 360, w: 3, h: 80 },
-  { kind: 'cable', x: 560, y: 214, w: 12, h: 110 },
   { kind: 'roundRug', x: 1760, y: 248, w: 340, h: 110, color: 'blue' },
-  { kind: 'rug', x: 752, y: 880, w: 156, h: 96, color: 'peach' },
+  // Archive: rug under the gallery computer
+  { kind: 'roundRug', x: 740, y: 912, w: 220, h: 120, color: 'peach' },
   { kind: 'roundRug', x: 1790, y: 880, w: 250, h: 110, color: 'pink' },
   { kind: 'hubRings', x: 1380, y: 650, w: 150, h: 96 },
 ];

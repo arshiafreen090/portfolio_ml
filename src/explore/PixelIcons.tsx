@@ -53,4 +53,11 @@ export const PixelIcons = {
     <rect x="4" y="8" width="2" height="4" fill="var(--pink)" /><rect x="10" y="8" width="2" height="4" fill="var(--pink)" />
     <rect x="7" y="11" width="2" height="2" fill="var(--peach)" /><rect x="7" y="13" width="2" height="2" fill="#ffd6a0" />
   </>),
+  telescope: svg(<>
+    <rect x="2" y="6" width="3" height="3" fill="var(--navy)" /><rect x="4" y="4" width="9" height="5" fill="var(--navy)" />
+    <rect x="5" y="5" width="7" height="3" fill="var(--lavender)" /><rect x="12" y="3" width="3" height="7" fill="var(--navy)" />
+    <rect x="13" y="4" width="1" height="5" fill="#c9eef8" /><rect x="8" y="5" width="2" height="3" fill="var(--peach)" />
+    <rect x="7" y="9" width="2" height="2" fill="var(--navy)" /><rect x="5" y="11" width="1" height="4" fill="var(--navy)" />
+    <rect x="7" y="11" width="2" height="4" fill="var(--navy)" /><rect x="10" y="11" width="1" height="4" fill="var(--navy)" />
+  </>),
 };

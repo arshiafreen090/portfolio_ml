@@ -1,11 +1,7 @@
 import type { ProjectStatus } from '../data/types';
 
-const VARIANT: Record<ProjectStatus, string> = {
-  Completed: 'badge--completed',
-  'Learning / Collection': 'badge--learning',
-  'In Development': 'badge--dev',
-};
-
+/** Only unfinished work gets a label — shipped projects don't need one. */
 export function StatusBadge({ status }: { status: ProjectStatus }) {
-  return <span className={`badge ${VARIANT[status]}`}>{status}</span>;
+  if (status !== 'In Development') return null;
+  return <span className="badge badge--dev">In Development</span>;
 }

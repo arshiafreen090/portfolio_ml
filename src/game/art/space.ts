@@ -13,12 +13,17 @@ import { P } from './theme';
 interface StarLayer { tile: HTMLCanvasElement; depth: number }
 interface Twinkle { x: number; y: number; phase: number; speed: number; color: string }
 interface Sky { img: HTMLCanvasElement; ax: number; ay: number; depth: number; scale: number; alpha?: number }
-interface Drifter { img: HTMLCanvasElement; x: number; y: number; depth: number; vx: number; vy: number; blink?: { x: number; y: number } }
+interface Drifter {
+  img: HTMLCanvasElement; x: number; y: number; depth: number; vx: number; vy: number;
+  blink?: { x: number; y: number };
+  /** wrap distance for the drift (default 600) */
+  span?: number;
+}
 
 const TILE = 512;
 const SHIP_CENTRE = { x: 1180, y: 550 };
 
-function starTile(seed: number, count: number, bigShare: number): HTMLCanvasElement {
+export function starTile(seed: number, count: number, bigShare: number): HTMLCanvasElement {
   const [c, ctx] = makeCanvas(TILE, TILE);
   const r = rng(seed);
   const tints = [P.star, P.star, P.star, P.cyanSoft, P.peachSoft, P.pinkSoft, P.lavenderSoft];
@@ -33,7 +38,7 @@ function starTile(seed: number, count: number, bigShare: number): HTMLCanvasElem
   return c;
 }
 
-function nebula(seed: number, w: number, h: number, color: string): HTMLCanvasElement {
+export function nebula(seed: number, w: number, h: number, color: string): HTMLCanvasElement {
   const [c, ctx] = makeCanvas(w, h);
   const r = rng(seed);
   const blobs = Array.from({ length: 7 }, () => ({
@@ -55,7 +60,7 @@ function nebula(seed: number, w: number, h: number, color: string): HTMLCanvasEl
   return c;
 }
 
-function planet(
+export function planet(
   r: number, base: string, light: string, shadow: string, bands: string[], ring?: { front: string; back: string },
 ): HTMLCanvasElement {
   const pad = ring ? Math.round(r * 0.9) : 2;
@@ -90,7 +95,7 @@ function planet(
   return c;
 }
 
-function asteroid(seed: number, r: number): HTMLCanvasElement {
+export function asteroid(seed: number, r: number): HTMLCanvasElement {
   const size = r * 2 + 4;
   const [c, ctx] = makeCanvas(size, size);
   const rand = rng(seed);
@@ -111,7 +116,7 @@ function asteroid(seed: number, r: number): HTMLCanvasElement {
   return c;
 }
 
-function satellite(): HTMLCanvasElement {
+export function satellite(): HTMLCanvasElement {
   const [c, ctx] = makeCanvas(34, 16);
   // solar panels
   for (const x of [1, 23]) {
@@ -128,7 +133,7 @@ function satellite(): HTMLCanvasElement {
   return c;
 }
 
-function station(): HTMLCanvasElement {
+export function station(): HTMLCanvasElement {
   const [c, ctx] = makeCanvas(46, 30);
   ellipseLine(ctx, 23, 15, 20, 7, P.lavenderDeep);
   ellipseLine(ctx, 23, 15, 19, 6, P.lavender, Math.PI * 0.1, Math.PI * 0.9);
@@ -136,6 +141,19 @@ function station(): HTMLCanvasElement {
   rect(ctx, 20, 7, 6, 16, P.lavenderSoft);
   rect(ctx, 20, 12, 6, 2, P.peach);
   rect(ctx, 22, 1, 2, 5, P.lavenderDeep);
+  return c;
+}
+
+/** Small passenger shuttle, flying right. */
+export function shuttle(): HTMLCanvasElement {
+  const [c, ctx] = makeCanvas(30, 12);
+  rect(ctx, 2, 3, 22, 7, P.navyDeep);
+  rect(ctx, 3, 4, 20, 5, P.hull);
+  rect(ctx, 3, 7, 20, 2, P.hullShade);
+  rect(ctx, 22, 4, 5, 4, P.navyDeep); rect(ctx, 23, 5, 3, 2, P.cyan);
+  rect(ctx, 8, 5, 2, 2, P.cyan); rect(ctx, 12, 5, 2, 2, P.cyan); rect(ctx, 16, 5, 2, 2, P.cyan);
+  rect(ctx, 6, 0, 8, 3, P.navyDeep); rect(ctx, 7, 1, 6, 2, P.pink);
+  rect(ctx, 0, 5, 2, 3, P.peach);
   return c;
 }
 
@@ -183,6 +201,9 @@ export class SpaceBackdrop {
       rock(8, 6, 2360, 900, -3, -1),
       rock(9, 4, -40, 420, 2, 1),
       { img: satellite(), x: 900, y: -40, depth: 0.55, vx: 7, vy: 0, blink: { x: 16, y: 0 } },
+      // a shuttle that crosses the view every so often
+      { img: shuttle(), x: 1300, y: 1180, depth: 0.6, vx: 38, vy: -4, span: 2600 },
+      { img: shuttle(), x: 400, y: -120, depth: 0.45, vx: 24, vy: 2, span: 3200 },
     ];
   }
 
@@ -229,7 +250,7 @@ export class SpaceBackdrop {
     for (const d of this.drifters) {
       const time = still ? 0 : t;
       // wrap drift inside a band around the anchor so objects never leave for good
-      const span = 600;
+      const span = d.span ?? 600;
       const dx = ((((d.vx * time) % span) + span * 1.5) % span) - span / 2;
       const dy = ((((d.vy * time) % span) + span * 1.5) % span) - span / 2;
       const wx = d.x + dx, wy = d.y + dy;

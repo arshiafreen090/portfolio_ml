@@ -1,4 +1,5 @@
 import type { RoomId } from '../game/world/shipMap';
+import { MusicToggle } from './MusicToggle';
 
 interface Props {
   room: RoomId | null;
@@ -14,6 +15,7 @@ export function Hud({ room, roomName, onMap, onHelp }: Props) {
         <i aria-hidden="true" />{roomName}
       </div>
       <div className="hud__actions">
+        <MusicToggle />
         <button type="button" className="btn btn--small" onClick={onMap}>Map</button>
         <button type="button" className="btn btn--small" onClick={onHelp} aria-label="Help and welcome card">?</button>
         <a className="btn btn--small" href={`${import.meta.env.BASE_URL}pro/`}>Professional View</a>

@@ -6,15 +6,16 @@
 // image for that piece.
 
 import { assetManifest, assetUrl, type PropId } from '../data/assets';
-import { designById } from '../data/designs';
+import { artworkSrc, designById, designs } from '../data/designs';
 import type { ProjectId } from '../data/types';
-import { drawBlinkers, drawCorridorPulses, drawNozzles, drawWallScreen } from './art/ambient';
+import { drawBlinkers, drawCorridorPulses, drawFan, drawNozzles, drawPanelLights, drawWallScreen } from './art/ambient';
 import { drawDoor } from './art/doors';
 import { drawEmote, drawFocusMarker, type Emote } from './art/fx';
+import { drawArtwork, drawGalleryComputer, drawTelescope } from './art/gallery';
 import {
-  drawAboutBoard, drawBriefingConsole, drawContactTerminal, drawGlobe, drawInteractableGlow, drawMachine,
-  drawPosterStand, drawSkillTerminal,
+  drawAboutBoard, drawBriefingConsole, drawContactTerminal, drawGlobe, drawInteractableGlow, drawSkillTerminal,
 } from './art/machines';
+import { drawWorkstation, drawWorkstationGlow } from './art/workstations';
 import { drawProp } from './art/props';
 import { buildShell, type ShellArt } from './art/shell';
 import { SpaceBackdrop, vignette } from './art/space';
@@ -47,6 +48,7 @@ const SLEEP_AFTER = 20;
 
 const PROP_ART: Partial<Record<Interactable['kind'], PropId>> = {
   skills: 'skillTerminal', contact: 'contactTerminal', about: 'aboutBoard', map: 'navConsole', briefing: 'briefingConsole',
+  gallery: 'galleryComputer', telescope: 'telescope',
 };
 
 const propSolid = (p: Prop): Rect => {
@@ -148,6 +150,28 @@ export class Engine {
     this.updateFocus();
   }
 
+  /** The interactive object drawn under a client (screen) point, front-most first. */
+  pick(clientX: number, clientY: number): Interactable | null {
+    const r = this.canvas.getBoundingClientRect();
+    const { w, h, zoom } = this.view;
+    const wx = this.cam.x + (clientX - r.left - w / 2) / zoom;
+    const wy = this.cam.y + (clientY - r.top - h / 2) / zoom;
+    let best: Interactable | null = null;
+    for (const it of interactables) {
+      const box = { x: it.base.x - it.size.w / 2, y: it.base.y - it.size.h, w: it.size.w, h: it.size.h };
+      if (inRect({ x: wx, y: wy }, box) && (!best || it.base.y > best.base.y)) best = it;
+    }
+    return best;
+  }
+
+  /** Open an object directly (e.g. it was clicked) — counts as an interaction. */
+  activate(it: Interactable) {
+    if (this.paused) return;
+    this.interacted = true;
+    this.idle = 0;
+    this.cb.onInteract?.(it);
+  }
+
   /** Called by E/Enter/Space or the on-screen action button. */
   interact() {
     if (!this.paused && this.focus) {
@@ -214,7 +238,10 @@ export class Engine {
       const cur = this.near.get(id) ?? 0;
       this.near.set(id, cur + (target - cur) * ease);
     };
-    for (const it of interactables) approach(it.id, Math.hypot(t.x - it.base.x, t.y - it.base.y) < 140 ? 1 : 0);
+    for (const it of interactables) {
+      const close = it.kind === 'poster' ? this.focus?.id === it.id : Math.hypot(t.x - it.base.x, t.y - it.base.y) < 140;
+      approach(it.id, close ? 1 : 0);
+    }
     for (const p of props) if (REACTIVE[p.kind]) approach(p.id, Math.hypot(t.x - p.x, t.y - p.y) < 70 ? 1 : 0);
 
     for (const door of doors) {
@@ -356,6 +383,11 @@ export class Engine {
 
     // ambient life
     for (const it of wallItems) if (it.kind === 'screen' && !replaced.has(it.room) && this.inView(it)) drawWallScreen(ctx, it, t);
+    for (const it of wallItems) {
+      if (replaced.has(it.room) || !this.inView(it)) continue;
+      if (it.kind === 'panel') drawPanelLights(ctx, it, t);
+      else if (it.kind === 'fan') drawFan(ctx, it, this.calm ? 0 : t);
+    }
     if (!this.calm) drawCorridorPulses(ctx, spines, t);
     drawNozzles(ctx, this.shell.nozzles, this.calm ? 0 : t);
     drawBlinkers(ctx, this.shell.blinkers, t);
@@ -367,7 +399,12 @@ export class Engine {
     }
 
     // floor glows, wall-mounted objects, then y-sorted props / machines / Tobby
-    for (const it of interactables) if (this.inView(this.boundsOf(it))) drawInteractableGlow(ctx, it, this.near.get(it.id) ?? 0);
+    for (const it of interactables) {
+      if (!this.inView(this.boundsOf(it))) continue;
+      const on = this.near.get(it.id) ?? 0;
+      if (it.kind === 'project') drawWorkstationGlow(ctx, it, on);
+      else drawInteractableGlow(ctx, it, on);
+    }
     for (const it of interactables) if (!it.solid) this.drawInteractable(it);
 
     const sorted: { y: number; draw: () => void }[] = [];
@@ -417,13 +454,19 @@ export class Engine {
       return;
     }
     switch (it.kind) {
-      case 'project': drawMachine(ctx, it, on, t); break;
+      case 'project': drawWorkstation(ctx, it, on, t); break;
       case 'skills': drawSkillTerminal(ctx, it, on, t); break;
       case 'contact': drawContactTerminal(ctx, it, on, t); break;
       case 'about': drawAboutBoard(ctx, it, on, this.image(assetManifest.avatar)); break;
       case 'map': drawGlobe(ctx, it, on, this.calm ? 0 : t); break;
       case 'briefing': drawBriefingConsole(ctx, it, on, t); break;
-      case 'poster': drawPosterStand(ctx, it, on, this.image(designById[it.refId]?.image ?? null, this.inView(this.boundsOf(it), PRELOAD_MARGIN))); break;
+      case 'poster': {
+        const d = designById[it.refId];
+        if (d) drawArtwork(ctx, it, d.number, this.image(artworkSrc(d)), on);
+        break;
+      }
+      case 'gallery': drawGalleryComputer(ctx, it, designs.map((d) => this.image(artworkSrc(d))), on, t); break;
+      case 'telescope': drawTelescope(ctx, it, on, this.calm ? 0 : t); break;
     }
   }
 

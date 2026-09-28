@@ -1,4 +1,4 @@
-import type { Project } from '../data/types';
+import type { Metric, Project, TechGroup } from '../data/types';
 import { ProjectLinks } from './ProjectLinks';
 import { StatusBadge } from './StatusBadge';
 
@@ -7,8 +7,35 @@ interface Props {
   /** id of the heading, for aria-labelledby on dialogs */
   titleId?: string;
   headingLevel?: 'h2' | 'h3';
-  /** body only — for places that already show title, status, stack and links */
+  /** body only — for places that already show title, status and links */
   compact?: boolean;
+}
+
+export function Metrics({ metrics }: { metrics: Metric[] }) {
+  return (
+    <dl className="metrics">
+      {metrics.map((m) => (
+        <div key={m.label} className={`metric ${m.value.length > 14 ? 'metric--wide' : ''}`}>
+          <dt>{m.label}</dt>
+          <dd>{m.value}</dd>
+          {m.note && <span className="metric__note">{m.note}</span>}
+        </div>
+      ))}
+    </dl>
+  );
+}
+
+export function TechGroups({ tech }: { tech: TechGroup[] }) {
+  return (
+    <dl className="tech">
+      {tech.map((g) => (
+        <div key={g.label}>
+          <dt>{g.label}</dt>
+          <dd><ul className="chips">{g.items.map((s) => <li key={s}>{s}</li>)}</ul></dd>
+        </div>
+      ))}
+    </dl>
+  );
 }
 
 export function ProjectDetails({ project: p, titleId, headingLevel: H = 'h2', compact = false }: Props) {
@@ -16,10 +43,17 @@ export function ProjectDetails({ project: p, titleId, headingLevel: H = 'h2', co
     <article className="project">
       {!compact && (
         <header className="project__head">
-          <div><StatusBadge status={p.status} /></div>
+          <StatusBadge status={p.status} />
           <H className="project__title" id={titleId}>{p.title}</H>
           <p className="project__desc">{p.description}</p>
         </header>
+      )}
+
+      {p.metrics && p.metrics.length > 0 && (
+        <section>
+          <h4>Model performance</h4>
+          <Metrics metrics={p.metrics} />
+        </section>
       )}
 
       <section>
@@ -28,7 +62,7 @@ export function ProjectDetails({ project: p, titleId, headingLevel: H = 'h2', co
       </section>
 
       <section>
-        <h4>{p.status === 'In Development' ? 'What it’s designed to do' : 'Approach'}</h4>
+        <h4>{p.status === 'In Development' ? 'What it’s designed to do' : 'What I built'}</h4>
         <ul className="points">{p.approach.map((a) => <li key={a}>{a}</li>)}</ul>
       </section>
 
@@ -53,17 +87,10 @@ export function ProjectDetails({ project: p, titleId, headingLevel: H = 'h2', co
         </section>
       )}
 
-      {p.results && p.results.length > 0 && (
+      {p.tech.length > 0 && (
         <section>
-          <h4>Results</h4>
-          <ul className="points">{p.results.map((r) => <li key={r}>{r}</li>)}</ul>
-        </section>
-      )}
-
-      {!compact && p.stack.length > 0 && (
-        <section>
-          <h4>Stack</h4>
-          <ul className="chips">{p.stack.map((s) => <li key={s}>{s}</li>)}</ul>
+          <h4>Technical details</h4>
+          <TechGroups tech={p.tech} />
         </section>
       )}
 

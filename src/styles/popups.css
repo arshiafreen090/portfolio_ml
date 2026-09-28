@@ -71,7 +71,42 @@
 .room-list { display: grid; gap: 10px; margin: 0; padding: 0; list-style: none; }
 .room-list__btn { width: 100%; justify-content: space-between; }
 
-.poster-popup { grid-template-columns: minmax(0, 1.2fr) minmax(0, 1fr); align-items: start; gap: 24px; }
-.poster-popup__art { max-width: 460px; }
-.poster-image { width: 100%; height: auto; border: 9px solid transparent; border-image: var(--px-navy) 3 fill / 9px; }
-@media (max-width: 640px) { .poster-popup { grid-template-columns: 1fr; } }
+/* artwork detail */
+.artwork-popup { display: grid; grid-template-columns: minmax(0, 1.3fr) minmax(0, 1fr); gap: 24px; align-items: start; }
+@media (max-width: 680px) { .artwork-popup { grid-template-columns: 1fr; } }
+
+/* gallery computer */
+.gallery-viewer { display: grid; grid-template-columns: minmax(0, 1.3fr) minmax(0, 1fr); gap: 22px; align-items: start; }
+.gallery-viewer__screen .artwork img, .artwork-popup .artwork img { max-height: min(58vh, 520px); object-fit: contain; }
+.gallery-viewer__side { display: grid; gap: 10px; justify-items: start; }
+.gallery-viewer__nav { display: flex; gap: 6px; margin-bottom: 6px; }
+.gallery-viewer__num {
+  width: 40px; height: 40px; padding: 0; font: 700 15px/1 var(--font-pixel); color: var(--navy); cursor: pointer;
+  background: none; border: 9px solid transparent; border-image: var(--px-cream) 3 fill / 9px;
+  filter: drop-shadow(0 2px 0 var(--navy-deep));
+}
+.gallery-viewer__num.is-active { border-image-source: var(--px-peach); transform: translateY(1px); }
+.gallery-viewer__num:hover { border-image-source: var(--px-lavender); }
+.gallery-viewer__actions { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 4px; }
+@media (max-width: 680px) { .gallery-viewer { grid-template-columns: 1fr; } }
+
+/* telescope */
+.telescope { display: grid; gap: 14px; justify-items: center; }
+.telescope__eyepiece {
+  position: relative; width: min(384px, 100%); aspect-ratio: 1;
+  border-radius: 50%; overflow: hidden; background: #0b0a20;
+  box-shadow: 0 0 0 6px var(--navy), 0 0 0 10px var(--lavender), 0 0 0 13px var(--navy-deep);
+  margin: 13px;
+}
+.telescope__eyepiece canvas { width: 100%; height: 100%; display: block; image-rendering: pixelated; }
+.telescope__reticle {
+  position: absolute; inset: 0; pointer-events: none;
+  background:
+    linear-gradient(rgba(201, 238, 248, 0.25), rgba(201, 238, 248, 0.25)) center / 1px 22% no-repeat,
+    linear-gradient(rgba(201, 238, 248, 0.25), rgba(201, 238, 248, 0.25)) center / 22% 1px no-repeat,
+    radial-gradient(circle, transparent 62%, rgba(11, 10, 32, 0.55) 100%);
+}
+.telescope__bar { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 10px; width: 100%; }
+.telescope__caption { font: 600 15px/1.3 var(--font-pixel); letter-spacing: 0.04em; }
+.telescope__scan { font-size: 11px; letter-spacing: 0.14em; text-transform: uppercase; color: var(--ink-soft); margin-right: 6px; }
+.telescope__controls { display: flex; gap: 8px; }

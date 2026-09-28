@@ -118,3 +118,30 @@ export function drawNozzles(ctx: Ctx, nozzles: Nozzle[], t: number) {
     rect(ctx, n.x, n.y - n.h / 2 + 6, 3, n.h - 12, P.cyanSoft);
   }
 }
+
+/** Control panel lights: a slow, staggered pattern (not all at once). */
+export function drawPanelLights(ctx: Ctx, it: WallItem, t: number) {
+  const cols = [P.mint, P.peach, P.cyan];
+  for (let i = 0; i < 3; i++) {
+    const on = Math.floor(t * 1.3 + i * 0.7 + it.x * 0.01) % 4 !== i;
+    rect(ctx, it.x + 4 + i * 6, it.y + it.h - 7, 3, 3, on ? cols[i] : P.lavenderDeep);
+  }
+  // tiny readout bar
+  const k = ((t * 0.5 + it.y * 0.01) % 1) * (it.w - 8);
+  rect(ctx, it.x + 4, it.y + 5, it.w - 8, 2, P.lavender);
+  rect(ctx, it.x + 4, it.y + 5, Math.max(1, Math.round(k)), 2, P.violet);
+  rect(ctx, it.x + 4, it.y + 10, it.w - 12, 1, P.lavender);
+}
+
+/** Vent fan: four blades turning slowly inside a round housing. */
+export function drawFan(ctx: Ctx, it: WallItem, t: number) {
+  const cx = it.x + it.w / 2, cy = it.y + it.h / 2, r = it.w / 2 - 5;
+  const a0 = t * 2.2;
+  for (let b = 0; b < 4; b++) {
+    const a = a0 + (b * Math.PI) / 2;
+    for (let k = 1; k <= r; k++) {
+      rect(ctx, Math.round(cx + Math.cos(a) * k), Math.round(cy + Math.sin(a) * k), 2, 2, P.lavenderSoft);
+    }
+  }
+  rect(ctx, cx - 2, cy - 2, 4, 4, P.navyDeep);
+}

@@ -11,7 +11,7 @@
 // the shell only reports where they are.
 
 import { floorItems, wallItems, type FloorItem, type WallItem } from '../world/decor';
-import { corridors, rooms, spines, WALL, WORLD, type Rect, type Room } from '../world/shipMap';
+import { corridors, rooms, spines, wallOf, WORLD, type Rect, type Room } from '../world/shipMap';
 import {
   box, disc, dither, dot, ellipse, ellipseLine, frame, glow, line, makeCanvas, mix, pixelText, rect, rng, textWidth, type Ctx,
 } from './pixel';
@@ -221,6 +221,7 @@ function drawCorridor(ctx: Ctx, c: Rect, isSpine: boolean) {
 function drawFloor(ctx: Ctx, room: Room) {
   const t = THEMES[room.id];
   const { x, y, w, h } = room.rect;
+  const WALL = wallOf(room);
   const fy = y + WALL, fh = h - WALL;
   rect(ctx, x, fy, w, fh, t.floorA);
   const s = t.tile;
@@ -343,6 +344,7 @@ function drawFloorItem(ctx: Ctx, f: FloorItem) {
 function drawWall(ctx: Ctx, room: Room) {
   const t = THEMES[room.id];
   const { x, y, w } = room.rect;
+  const WALL = wallOf(room);
   rect(ctx, x, y, w, WALL, t.wall);
   // top trim
   rect(ctx, x, y, w, 6, t.wallTrim);
@@ -352,7 +354,13 @@ function drawWall(ctx: Ctx, room: Room) {
     rect(ctx, px, y + 10, 1, WALL - 24, t.wallShade);
     dot(ctx, px - 4, y + 12, t.wallShade); dot(ctx, px + 4, y + 12, t.wallShade);
   }
-  rect(ctx, x, y + Math.round(WALL * 0.55), w, 1, t.wallShade);
+  if (WALL > 100) {
+    // gallery: tall wall with a thin picture rail near the top
+    rect(ctx, x, y + 12, w, 2, t.wallShade);
+    rect(ctx, x, y + 14, w, 1, P.paper);
+  } else {
+    rect(ctx, x, y + Math.round(WALL * 0.55), w, 1, t.wallShade);
+  }
   // baseboard with a dotted accent light strip
   rect(ctx, x, y + WALL - 12, w, 12, t.wallShade);
   rect(ctx, x, y + WALL - 12, w, 1, P.navyDeep);
@@ -447,6 +455,29 @@ function drawWallItem(ctx: Ctx, it: WallItem, room: Room, cuts: Cut[]) {
       }
       break;
     }
+    case 'spot': {
+      // track spotlight above a framed work + warm wash on the wall below it
+      glow(ctx, x, y + h * 0.55, w * 0.75, h * 0.7, P.warm, 0.32);
+      rect(ctx, x - 7, y, 14, 4, P.navyDeep);
+      rect(ctx, x - 4, y + 4, 8, 4, P.navy);
+      rect(ctx, x - 3, y + 8, 6, 2, P.warm);
+      break;
+    }
+    case 'panel': {
+      // small control panel; its lights are animated by the engine
+      frame(ctx, x, y, w, h, P.lavenderSoft, P.navyDeep, 1, 1);
+      rect(ctx, x + 2, y + 2, w - 4, 1, P.paper);
+      rect(ctx, x + 3, y + h - 8, w - 6, 5, P.navy);
+      for (let i = 0; i < 3; i++) rect(ctx, x + 4 + i * 6, y + h - 7, 3, 3, P.lavenderDeep);
+      break;
+    }
+    case 'fan': {
+      // round vent housing; the blades spin in the ambient layer
+      disc(ctx, x + w / 2, y + h / 2, w / 2, P.navyDeep);
+      disc(ctx, x + w / 2, y + h / 2, w / 2 - 2, P.lavender);
+      disc(ctx, x + w / 2, y + h / 2, w / 2 - 4, P.navy);
+      break;
+    }
     case 'sign': {
       frame(ctx, x, y, w, h, P.navy, P.navyDeep, 2, 1);
       pixelText(ctx, it.variant ?? '', x + w / 2, y + 2, P.cream, 9, 'center');
@@ -459,6 +490,7 @@ function drawWallItem(ctx: Ctx, it: WallItem, room: Room, cuts: Cut[]) {
 function lightRoom(ctx: Ctx, room: Room) {
   const t = THEMES[room.id];
   const { x, y, w, h } = room.rect;
+  const WALL = wallOf(room);
   const fy = y + WALL, fh = h - WALL;
   ctx.save();
   ctx.beginPath();

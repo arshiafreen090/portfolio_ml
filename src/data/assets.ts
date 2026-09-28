@@ -15,6 +15,11 @@ import type { RoomId } from '../game/world/shipMap';
 export interface AssetManifest {
   tobby: { image: string; atlas: string };
   avatar: string;
+  /**
+   * Background music for Explore mode (an audio file under public/, e.g. 'assets/audio/ambient.mp3').
+   * Must be a track you are licensed to host. null = no music and no mute button.
+   */
+  music: string | null;
   /** Optional tiled space backdrop. null = procedural starfield. */
   space: string | null;
   /** Optional full ship image (hull, corridors, rooms) replacing the procedural shell; covers the world rect. */
@@ -27,11 +32,13 @@ export interface AssetManifest {
   decor: Partial<Record<PropKind, string>>;
 }
 
-export type PropId = 'skillTerminal' | 'contactTerminal' | 'aboutBoard' | 'navConsole' | 'briefingConsole';
+export type PropId =
+  | 'skillTerminal' | 'contactTerminal' | 'aboutBoard' | 'navConsole' | 'briefingConsole' | 'galleryComputer' | 'telescope';
 
 export const assetManifest: AssetManifest = {
   tobby: { image: 'assets/character/tobby.png', atlas: 'assets/character/tobby.json' },
   avatar: 'assets/ui/avatar.png',
+  music: 'assets/audio/ambient.mp3',
   space: null,
   hull: null,
   rooms: {
@@ -55,6 +62,8 @@ export const assetManifest: AssetManifest = {
     aboutBoard: null,
     navConsole: null,
     briefingConsole: null,
+    galleryComputer: null,
+    telescope: null,
   },
   decor: {},
 };
