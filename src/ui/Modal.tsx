@@ -5,15 +5,18 @@ interface Props {
   onClose: () => void;
   labelledBy: string;
   size?: 'sm' | 'md' | 'lg';
+  /** small label in the panel's title bar, e.g. the room the panel belongs to */
+  bar?: string;
   className?: string;
   children: ReactNode;
 }
 
 /**
  * Native <dialog> modal: focus trap, Esc-to-close and focus return come from
- * the browser. Clicking the backdrop also closes it.
+ * the browser. Clicking the backdrop also closes it. Styled as a pixel
+ * spaceship panel with a title bar.
  */
-export function Modal({ open, onClose, labelledBy, size = 'md', className = '', children }: Props) {
+export function Modal({ open, onClose, labelledBy, size = 'md', bar, className = '', children }: Props) {
   const ref = useRef<HTMLDialogElement>(null);
   const openRef = useRef(open);
   openRef.current = open;
@@ -37,11 +40,17 @@ export function Modal({ open, onClose, labelledBy, size = 'md', className = '', 
       onCancel={(e) => { e.preventDefault(); onClose(); }}
       onClick={(e) => { if (e.target === e.currentTarget) onClose(); }}
     >
-      <div className="modal__body">
-        <button type="button" className="icon-btn modal__close" onClick={onClose} aria-label="Close">
-          <svg width="14" height="14" viewBox="0 0 14 14" aria-hidden="true"><path d="M2 2l10 10M12 2L2 12" stroke="currentColor" strokeWidth="3" strokeLinecap="square" /></svg>
-        </button>
-        {children}
+      <div className="modal__inner">
+        <div className="modal__bar">
+          <span className="modal__lights" aria-hidden="true"><i /><i /><i /></span>
+          {bar && <span className="modal__bar-label" aria-hidden="true">{bar}</span>}
+          <button type="button" className="icon-btn modal__close" onClick={onClose} aria-label="Close">
+            <svg width="12" height="12" viewBox="0 0 12 12" shapeRendering="crispEdges" aria-hidden="true">
+              <path d="M0 0h3v3H0zM3 3h2v2H3zM5 5h2v2H5zM7 7h2v2H7zM9 9h3v3H9zM9 0h3v3H9zM7 3h2v2H7zM3 7h2v2H3zM0 9h3v3H0z" fill="currentColor" />
+            </svg>
+          </button>
+        </div>
+        <div className="modal__body">{children}</div>
       </div>
     </dialog>
   );

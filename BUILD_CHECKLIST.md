@@ -14,10 +14,10 @@ Legend: [x] done · [~] done with placeholder art (swap via src/data/assets.ts) 
 ## World
 - [~] spaceship exterior
 - [~] surrounding space
-- [~] central navigation (Cockpit + navigation console / Map)
+- [~] central navigation (Navigation Hub globe + Map; Cockpit is the start room)
 - [~] corridors
 - [~] doors (auto-open)
-- [ ] windows
+- [~] windows (cockpit canopy, hub porthole, room windows — space shows through)
 - [x] room boundaries
 - [x] Tobby movement
 - [~] Tobby idle/directional animation (sliced from reference sheet; no front walk cycle)

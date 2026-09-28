@@ -1,46 +1,61 @@
-/* Game popups (native <dialog>) */
+/* Game popups (native <dialog>) — pixel spaceship panels with a title bar */
 
 .modal {
   padding: 0;
   width: min(100% - 2 * var(--gutter), 640px);
-  max-height: min(100dvh - 32px, 900px);
+  max-height: none;
   color: var(--ink);
-  background: var(--paper);
-  border: var(--border);
-  border-radius: 16px;
-  box-shadow: 0 6px 0 var(--navy-deep), 0 24px 60px rgba(16, 20, 42, 0.45);
-  overflow: hidden;
+  background: none;
+  border: 12px solid transparent;
+  border-image: var(--px-cream) 3 fill / 12px;
+  filter: drop-shadow(0 5px 0 var(--navy-deep)) drop-shadow(0 18px 30px rgba(14, 18, 41, 0.45));
+  overflow: visible;
 }
-.modal--sm { width: min(100% - 2 * var(--gutter), 460px); }
+.modal--sm { width: min(100% - 2 * var(--gutter), 470px); }
 .modal--lg { width: min(100% - 2 * var(--gutter), 820px); }
 
-.modal::backdrop { background: rgba(16, 20, 42, 0.45); }
-.modal--welcome::backdrop { background: rgba(16, 20, 42, 0.3); }
+.modal::backdrop { background: rgba(14, 18, 41, 0.5); }
+.modal--welcome::backdrop { background: rgba(14, 18, 41, 0.28); }
 
-.modal[open] { animation: modal-in 0.16s ease-out; }
-@keyframes modal-in { from { opacity: 0; transform: translateY(8px); } }
+.modal[open] { animation: modal-in 0.18s steps(4, end); }
+@keyframes modal-in { from { opacity: 0; transform: translateY(10px) scale(0.98); } }
 
-.modal__body {
-  position: relative;
-  max-height: inherit;
-  overflow-y: auto;
-  padding: clamp(20px, 4vw, 36px);
-  overscroll-behavior: contain;
+.modal__inner {
+  display: flex; flex-direction: column;
+  max-height: min(100dvh - 64px, 880px);
 }
 
-.modal__close { position: absolute; top: 12px; right: 12px; z-index: 1; }
+.modal__bar {
+  display: flex; align-items: center; gap: 12px; flex: none;
+  margin: -3px -3px 0; padding: 4px 4px 4px 10px;
+  background: var(--lavender-soft);
+  border-bottom: 3px solid var(--navy);
+  box-shadow: inset 0 3px 0 #fff;
+}
+.modal__lights { display: inline-flex; gap: 5px; }
+.modal__lights i { width: 9px; height: 9px; background: var(--pink); box-shadow: 0 0 0 2px var(--navy-deep); }
+.modal__lights i:nth-child(2) { background: var(--peach); }
+.modal__lights i:nth-child(3) { background: #8fd6b4; }
+.modal__bar-label {
+  flex: 1; overflow: hidden; white-space: nowrap; text-overflow: ellipsis;
+  font: 600 12px/1 var(--font-pixel); letter-spacing: 0.1em; text-transform: uppercase; color: var(--ink-soft);
+}
+.modal__close { margin-left: auto; }
+
+.modal__body {
+  position: relative; overflow-y: auto; overscroll-behavior: contain;
+  padding: clamp(18px, 3.5vw, 32px);
+}
 
 .popup { display: grid; gap: 14px; }
 .popup__eyebrow {
   font: 600 13px/1 var(--font-pixel); letter-spacing: 0.08em; text-transform: uppercase; color: var(--ink-soft);
 }
-.popup__title { font-size: clamp(22px, 3.2vw, 28px); padding-right: 44px; }
+.popup__title { font-size: clamp(22px, 3.2vw, 28px); }
 .popup__footer {
   display: flex; flex-wrap: wrap; justify-content: space-between; gap: 12px;
-  padding-top: 12px; border-top: 2px solid var(--line); font-size: 15px;
+  padding-top: 12px; border-top: 3px dotted var(--line); font-size: 15px;
 }
-
-.project__title { padding-right: 44px; }
 
 .link-btn {
   padding: 0; font: inherit; color: var(--navy); background: none; border: 0;
@@ -51,12 +66,12 @@
 .skill-group h3 { font-size: 16px; }
 
 .about-head { display: flex; align-items: center; gap: 16px; }
-.avatar { width: 88px; height: auto; border: var(--border); border-radius: 12px; }
+.avatar { width: 88px; height: auto; border: 6px solid transparent; border-image: var(--px-navy) 3 fill / 6px; }
 
 .room-list { display: grid; gap: 10px; margin: 0; padding: 0; list-style: none; }
 .room-list__btn { width: 100%; justify-content: space-between; }
 
 .poster-popup { grid-template-columns: minmax(0, 1.2fr) minmax(0, 1fr); align-items: start; gap: 24px; }
 .poster-popup__art { max-width: 460px; }
-.poster-image { width: 100%; height: auto; border: var(--border); border-radius: 10px; }
+.poster-image { width: 100%; height: auto; border: 9px solid transparent; border-image: var(--px-navy) 3 fill / 9px; }
 @media (max-width: 640px) { .poster-popup { grid-template-columns: 1fr; } }

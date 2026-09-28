@@ -6,7 +6,7 @@ import { ProjectDetails } from '../../ui/ProjectDetails';
 export function ProjectPopup({ refId, onClose }: { refId: string | null; onClose: () => void }) {
   const project = refId ? projectById[refId as ProjectId] : null;
   return (
-    <Modal open={!!project} onClose={onClose} labelledBy="project-title" size="lg">
+    <Modal open={!!project} onClose={onClose} bar="Project Lab · Machine log" labelledBy="project-title" size="lg">
       {project && <ProjectDetails project={project} titleId="project-title" />}
     </Modal>
   );

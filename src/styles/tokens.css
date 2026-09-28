@@ -24,5 +24,15 @@
   --lift: 0 4px 0 var(--navy-deep);
   --gutter: 16px;
 
+  /* 9-slice pixel frames (3px pixels): outline, fill, top highlight, bottom shade */
+  --px-cream: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='9' height='9' shape-rendering='crispEdges'%3E%3Cpath fill='%231f2550' d='M1 0h7v1h1v7H8v1H1V8H0V1h1z'/%3E%3Cpath fill='%23fffaf3' d='M1 1h7v7H1z'/%3E%3Cpath fill='%23ffffff' d='M1 1h7v1H1z'/%3E%3Cpath fill='%23e6e2f6' d='M1 7h7v1H1z'/%3E%3C/svg%3E");
+  --px-navy: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='9' height='9' shape-rendering='crispEdges'%3E%3Cpath fill='%23141938' d='M1 0h7v1h1v7H8v1H1V8H0V1h1z'/%3E%3Cpath fill='%232d3668' d='M1 1h7v7H1z'/%3E%3Cpath fill='%234a5288' d='M1 1h7v1H1z'/%3E%3Cpath fill='%231f2550' d='M1 7h7v1H1z'/%3E%3C/svg%3E");
+  --px-pink: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='9' height='9' shape-rendering='crispEdges'%3E%3Cpath fill='%231f2550' d='M1 0h7v1h1v7H8v1H1V8H0V1h1z'/%3E%3Cpath fill='%23e9738f' d='M1 1h7v7H1z'/%3E%3Cpath fill='%23f5a3b7' d='M1 1h7v1H1z'/%3E%3Cpath fill='%23c9536f' d='M1 7h7v1H1z'/%3E%3C/svg%3E");
+  --px-lavender: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='9' height='9' shape-rendering='crispEdges'%3E%3Cpath fill='%231f2550' d='M1 0h7v1h1v7H8v1H1V8H0V1h1z'/%3E%3Cpath fill='%23eeebf9' d='M1 1h7v7H1z'/%3E%3Cpath fill='%23ffffff' d='M1 1h7v1H1z'/%3E%3Cpath fill='%23d6d0ee' d='M1 7h7v1H1z'/%3E%3C/svg%3E");
+  --px-peach: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='9' height='9' shape-rendering='crispEdges'%3E%3Cpath fill='%231f2550' d='M1 0h7v1h1v7H8v1H1V8H0V1h1z'/%3E%3Cpath fill='%23fdeadb' d='M1 1h7v7H1z'/%3E%3Cpath fill='%23ffffff' d='M1 1h7v1H1z'/%3E%3Cpath fill='%23f3cfb3' d='M1 7h7v1H1z'/%3E%3C/svg%3E");
+  --px-blue: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='9' height='9' shape-rendering='crispEdges'%3E%3Cpath fill='%231f2550' d='M1 0h7v1h1v7H8v1H1V8H0V1h1z'/%3E%3Cpath fill='%23e8eef9' d='M1 1h7v7H1z'/%3E%3Cpath fill='%23ffffff' d='M1 1h7v1H1z'/%3E%3Cpath fill='%23cdd8f0' d='M1 7h7v1H1z'/%3E%3C/svg%3E");
+  --px-pinksoft: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='9' height='9' shape-rendering='crispEdges'%3E%3Cpath fill='%231f2550' d='M1 0h7v1h1v7H8v1H1V8H0V1h1z'/%3E%3Cpath fill='%23fde4ea' d='M1 1h7v7H1z'/%3E%3Cpath fill='%23ffffff' d='M1 1h7v1H1z'/%3E%3Cpath fill='%23f5c3cf' d='M1 7h7v1H1z'/%3E%3C/svg%3E");
+  --px-shadow: drop-shadow(0 3px 0 var(--navy-deep));
+
   color-scheme: light;
 }

@@ -1,7 +1,7 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { Engine } from '../game/engine';
 import { roomById, type Interactable, type InteractKind, type RoomId } from '../game/world/shipMap';
-import { Hud } from './Hud';
+import { Hud, RoomToast } from './Hud';
 import { InteractionPrompt } from './InteractionPrompt';
 import { TouchControls } from './TouchControls';
 import { WelcomeCard } from './WelcomeCard';
@@ -30,16 +30,21 @@ export function ExploreApp() {
   const engineRef = useRef<Engine | null>(null);
   const [ready, setReady] = useState(false);
   const [focus, setFocus] = useState<Interactable | null>(null);
-  const [room, setRoom] = useState<RoomId | null>('hub');
+  const [room, setRoom] = useState<RoomId | null>('cockpit');
   const [popup, setPopup] = useState<Popup | null>({ kind: 'welcome' });
+  const [toast, setToast] = useState<{ room: RoomId; key: number } | null>(null);
   const coarse = useCoarsePointer();
 
   useEffect(() => {
     const engine = new Engine(canvasRef.current!, {
       onReady: () => setReady(true),
       onFocus: setFocus,
-      onRoom: setRoom,
-      onInteract: (it) => setPopup({ kind: it.kind, refId: it.refId }),
+      onRoom: (r) => {
+        setRoom(r);
+        if (r) setToast({ room: r, key: Date.now() });
+      },
+      // the cockpit flight console replays the welcome briefing
+      onInteract: (it) => setPopup(it.kind === 'briefing' ? { kind: 'welcome' } : { kind: it.kind, refId: it.refId }),
     });
     engineRef.current = engine;
     if (import.meta.env.DEV) (window as unknown as { __engine: Engine }).__engine = engine;
@@ -71,7 +76,11 @@ export function ExploreApp() {
 
       {!popup && (
         <>
+          {toast && (
+            <RoomToast key={toast.key} room={toast.room} name={roomById[toast.room].name} onDone={() => setToast(null)} />
+          )}
           <Hud
+            room={room}
             roomName={room ? roomById[room].name : 'Corridor'}
             onMap={() => setPopup({ kind: 'map', refId: 'map' })}
             onHelp={() => setPopup({ kind: 'welcome' })}

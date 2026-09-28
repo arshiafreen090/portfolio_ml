@@ -5,7 +5,7 @@ import { PosterView } from '../../ui/PosterView';
 export function PosterPopup({ refId, onClose }: { refId: string | null; onClose: () => void }) {
   const design = refId ? designById[refId] : null;
   return (
-    <Modal open={!!design} onClose={onClose} labelledBy="poster-title" size="lg" className="modal--poster">
+    <Modal open={!!design} onClose={onClose} bar="Design Archive" labelledBy="poster-title" size="lg" className="modal--poster">
       {design && (
         <div className="popup poster-popup">
           <div className="poster-popup__art"><PosterView design={design} /></div>

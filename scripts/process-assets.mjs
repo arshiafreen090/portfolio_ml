@@ -21,6 +21,9 @@ const FRAMES = {
   idle0: [38, 410, 64, 69], idle1: [120, 410, 65, 68], idle2: [203, 409, 65, 69], idle3: [286, 409, 65, 69],
   walk0: [384, 412, 73, 68], walk1: [466, 412, 73, 68], walk2: [548, 412, 73, 68], walk3: [630, 412, 74, 69],
   back0: [327, 744, 58, 75], back1: [393, 744, 57, 75], back2: [459, 744, 57, 75], back3: [524, 744, 58, 75],
+  sit0: [745, 554, 62, 75], sit1: [827, 555, 62, 74], sit2: [911, 555, 71, 75],
+  sleep0: [37, 763, 72, 46], sleep1: [116, 762, 76, 47], sleep2: [201, 762, 81, 47],
+  wave0: [1290, 744, 64, 73], wave1: [1363, 743, 61, 74], wave2: [1431, 739, 71, 78],
 };
 
 // Animation names are `${state}-${direction}`; `flip` mirrors horizontally.
@@ -33,6 +36,10 @@ const ANIMATIONS = {
   'walk-right': { frames: ['walk0', 'walk1', 'walk2', 'walk3'], fps: 9 },
   'idle-left': { frames: ['walk1'], fps: 1, flip: true },
   'walk-left': { frames: ['walk0', 'walk1', 'walk2', 'walk3'], fps: 9, flip: true },
+  // reactions (direction-less)
+  sit: { frames: ['sit0', 'sit1', 'sit2', 'sit1'], fps: 2 },
+  sleep: { frames: ['sleep0', 'sleep2'], fps: 0.8 },
+  wave: { frames: ['wave0', 'wave1', 'wave2', 'wave1'], fps: 7 },
 };
 
 const CELL_W = 84;

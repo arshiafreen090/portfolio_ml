@@ -10,7 +10,7 @@ interface Props {
 
 export function MapPopup({ open, onClose, onGoTo, onWelcome }: Props) {
   return (
-    <Modal open={open} onClose={onClose} labelledBy="map-title" size="sm">
+    <Modal open={open} onClose={onClose} bar="Navigation Hub · Teleport" labelledBy="map-title" size="sm">
       <div className="popup">
         <p className="popup__eyebrow">Navigation console</p>
         <h2 id="map-title" className="popup__title">Where to?</h2>

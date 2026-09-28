@@ -3,7 +3,7 @@ import { Modal } from '../../ui/Modal';
 
 export function ContactPopup({ open, onClose }: { open: boolean; onClose: () => void }) {
   return (
-    <Modal open={open} onClose={onClose} labelledBy="contact-title" size="sm">
+    <Modal open={open} onClose={onClose} bar="About + Contact · Comms" labelledBy="contact-title" size="sm">
       <div className="popup">
         <p className="popup__eyebrow">Comms terminal</p>
         <h2 id="contact-title" className="popup__title">Get in touch</h2>

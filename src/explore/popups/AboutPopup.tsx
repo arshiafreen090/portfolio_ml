@@ -4,7 +4,7 @@ import { Modal } from '../../ui/Modal';
 
 export function AboutPopup({ open, onClose }: { open: boolean; onClose: () => void }) {
   return (
-    <Modal open={open} onClose={onClose} labelledBy="about-title" size="md">
+    <Modal open={open} onClose={onClose} bar="About + Contact · Profile" labelledBy="about-title" size="md">
       <div className="popup">
         <div className="about-head">
           <img className="avatar" src={assetUrl(assetManifest.avatar)} alt="" width="88" height="84" />

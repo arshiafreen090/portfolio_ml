@@ -4,7 +4,7 @@ import { Modal } from '../../ui/Modal';
 export function SkillsPopup({ refId, onClose }: { refId: string | null; onClose: () => void }) {
   const terminal = refId ? skillTerminalById[refId] : null;
   return (
-    <Modal open={!!terminal} onClose={onClose} labelledBy="skills-title" size="md">
+    <Modal open={!!terminal} onClose={onClose} bar="Skills Database · Terminal" labelledBy="skills-title" size="md">
       {terminal && (
         <div className="popup">
           <p className="popup__eyebrow">Skills Database</p>

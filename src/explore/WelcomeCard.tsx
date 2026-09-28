@@ -2,7 +2,7 @@ import { assetManifest, assetUrl } from '../data/assets';
 import { profile } from '../data/profile';
 import type { RoomId } from '../game/world/shipMap';
 import { Modal } from '../ui/Modal';
-import { TileIcons } from './TileIcons';
+import { PixelIcons } from './PixelIcons';
 
 interface Props {
   open: boolean;
@@ -19,7 +19,7 @@ const TILES: { room: 'lab' | 'skills' | 'gallery' | 'about'; title: string; sub:
 
 export function WelcomeCard({ open, onClose, onGoTo }: Props) {
   return (
-    <Modal open={open} onClose={onClose} labelledBy="welcome-title" size="md" className="modal--welcome">
+    <Modal open={open} onClose={onClose} labelledBy="welcome-title" size="md" bar="Afreen’s Lab · Welcome aboard" className="modal--welcome">
       <div className="welcome">
         <div className="welcome__top">
           <img className="welcome__avatar" src={assetUrl(assetManifest.avatar)} alt="" width="104" height="99" />
@@ -37,7 +37,7 @@ export function WelcomeCard({ open, onClose, onGoTo }: Props) {
         <div className="welcome__tiles">
           {TILES.map((t) => (
             <button key={t.room} type="button" className={`welcome__tile tone-${t.tone}`} onClick={() => onGoTo(t.room)}>
-              <span className="welcome__tile-icon">{TileIcons[t.room]}</span>
+              <span className="welcome__tile-icon">{PixelIcons[t.room]}</span>
               <span className="welcome__tile-title">{t.title}</span>
               <span className="welcome__tile-sub">{t.sub}</span>
             </button>
