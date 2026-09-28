@@ -1,0 +1,62 @@
+/* Game popups (native <dialog>) */
+
+.modal {
+  padding: 0;
+  width: min(100% - 2 * var(--gutter), 640px);
+  max-height: min(100dvh - 32px, 900px);
+  color: var(--ink);
+  background: var(--paper);
+  border: var(--border);
+  border-radius: 16px;
+  box-shadow: 0 6px 0 var(--navy-deep), 0 24px 60px rgba(16, 20, 42, 0.45);
+  overflow: hidden;
+}
+.modal--sm { width: min(100% - 2 * var(--gutter), 460px); }
+.modal--lg { width: min(100% - 2 * var(--gutter), 820px); }
+
+.modal::backdrop { background: rgba(16, 20, 42, 0.45); }
+.modal--welcome::backdrop { background: rgba(16, 20, 42, 0.3); }
+
+.modal[open] { animation: modal-in 0.16s ease-out; }
+@keyframes modal-in { from { opacity: 0; transform: translateY(8px); } }
+
+.modal__body {
+  position: relative;
+  max-height: inherit;
+  overflow-y: auto;
+  padding: clamp(20px, 4vw, 36px);
+  overscroll-behavior: contain;
+}
+
+.modal__close { position: absolute; top: 12px; right: 12px; z-index: 1; }
+
+.popup { display: grid; gap: 14px; }
+.popup__eyebrow {
+  font: 600 13px/1 var(--font-pixel); letter-spacing: 0.08em; text-transform: uppercase; color: var(--ink-soft);
+}
+.popup__title { font-size: clamp(22px, 3.2vw, 28px); padding-right: 44px; }
+.popup__footer {
+  display: flex; flex-wrap: wrap; justify-content: space-between; gap: 12px;
+  padding-top: 12px; border-top: 2px solid var(--line); font-size: 15px;
+}
+
+.project__title { padding-right: 44px; }
+
+.link-btn {
+  padding: 0; font: inherit; color: var(--navy); background: none; border: 0;
+  text-decoration: underline; cursor: pointer;
+}
+
+.skill-group { display: grid; gap: 8px; }
+.skill-group h3 { font-size: 16px; }
+
+.about-head { display: flex; align-items: center; gap: 16px; }
+.avatar { width: 88px; height: auto; border: var(--border); border-radius: 12px; }
+
+.room-list { display: grid; gap: 10px; margin: 0; padding: 0; list-style: none; }
+.room-list__btn { width: 100%; justify-content: space-between; }
+
+.poster-popup { grid-template-columns: minmax(0, 1.2fr) minmax(0, 1fr); align-items: start; gap: 24px; }
+.poster-popup__art { max-width: 460px; }
+.poster-image { width: 100%; height: auto; border: var(--border); border-radius: 10px; }
+@media (max-width: 640px) { .poster-popup { grid-template-columns: 1fr; } }

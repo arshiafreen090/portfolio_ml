@@ -1,0 +1,28 @@
+/* Design tokens — mirrored for canvas drawing in src/game/palette.ts */
+:root {
+  --cream: #fbf4ea;
+  --paper: #fffaf3;
+  --navy: #2d3668;
+  --navy-deep: #1f2550;
+  --ink: #2d3668;
+  --ink-soft: #5b6292;
+  --lavender: #b8b2e3;
+  --lavender-soft: #eeebf9;
+  --peach: #f0a877;
+  --peach-soft: #fdeadb;
+  --pink: #e9738f; /* accent only */
+  --pink-deep: #c9536f;
+  --pink-soft: #fde4ea;
+  --line: #ddd7ee;
+  --space: #161b36;
+
+  --font-pixel: 'Pixelify Sans', ui-monospace, monospace;
+  --font-body: 'Nunito', system-ui, -apple-system, 'Segoe UI', sans-serif;
+
+  --radius: 12px;
+  --border: 3px solid var(--navy);
+  --lift: 0 4px 0 var(--navy-deep);
+  --gutter: 16px;
+
+  color-scheme: light;
+}
