@@ -286,3 +286,21 @@ export function drawProp(ctx: Ctx, p: Prop, near: number, t: number) {
     rect(ctx, sx + 3, sy + 13, ((t * 6) % 24) | 0, 2, P.cyan);
   }
 }
+
+export function drawBookshelfInteractable(ctx: Ctx, x: number, y: number, near: number, t: number) {
+  const sprite = statics.bookshelf!();
+  shadow(ctx, x, y, 52);
+  blit(ctx, sprite, x, y);
+  const left = x - 30, top = y - 108;
+  const shelfY = top + 30 + 24 * (Math.abs(Math.round(x)) % 3) - 1;
+  const bx = left + 20 + (Math.round(y) % 20);
+  const lift = Math.round(near * 3);
+  rect(ctx, bx - 1, shelfY - 17 - lift, 6, 17, P.navyDeep);
+  rect(ctx, bx, shelfY - 16 - lift, 4, 15, P.peach);
+  rect(ctx, bx, shelfY - 13 - lift, 4, 1, P.paper);
+  glow(ctx, bx + 2, shelfY - 8, 10, 12, P.warm, 0.35 + near * 0.45);
+  if (near > 0.35) {
+    const blink = Math.floor(t * 2.5) % 4;
+    rect(ctx, bx + 8, top + 14 + blink, 10, 2, P.lavender);
+  }
+}

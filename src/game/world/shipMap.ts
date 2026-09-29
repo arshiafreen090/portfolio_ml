@@ -6,7 +6,7 @@
 // Corridors are floor strips that overlap rooms where a doorway is.
 //
 // Layout (west → east): Cockpit (nose) — main corridor — Project Lab above /
-// Design Archive below — Navigation Hub — Skills Database above / About below —
+// Skills Database below — Navigation Hub — Design Archive above / About below —
 // airlock + engines (tail).
 //
 // Interactables only reference content by id — the content itself lives in src/data/.
@@ -28,7 +28,7 @@ export interface Room {
 }
 
 export type InteractKind =
-  | 'project' | 'skills' | 'about' | 'contact' | 'poster' | 'map' | 'briefing' | 'gallery' | 'telescope';
+  | 'project' | 'skills' | 'about' | 'contact' | 'poster' | 'map' | 'briefing' | 'gallery' | 'telescope' | 'jokes';
 
 /** Which way an object faces — decides where Tobby stands to use it. */
 export type Facing = 'down' | 'left' | 'right';
@@ -69,12 +69,12 @@ export const WORLD: Rect = { x: 0, y: 0, w: 2360, h: 1140 };
 export const rooms: Room[] = [
   { id: 'cockpit', name: 'Cockpit', rect: { x: 80, y: 360, w: 360, h: 380 }, spawn: { x: 330, y: 650 } },
   { id: 'lab', name: 'Project Lab', rect: { x: 520, y: 40, w: 620, h: 400 }, spawn: { x: 830, y: 400 } },
+  { id: 'skills', name: 'Skills Database', rect: { x: 540, y: 690, w: 580, h: 400 }, spawn: { x: 830, y: 850 } },
+  { id: 'hub', name: 'Navigation Hub', rect: { x: 1180, y: 330, w: 400, h: 460 }, spawn: { x: 1380, y: 740 } },
   {
-    id: 'gallery', name: 'Design Archive', rect: { x: 540, y: 690, w: 580, h: 400 }, spawn: { x: 830, y: 850 },
+    id: 'gallery', name: 'Design Archive', rect: { x: 1620, y: 40, w: 620, h: 400 }, spawn: { x: 1930, y: 400 },
     wall: GALLERY_WALL,
   },
-  { id: 'hub', name: 'Navigation Hub', rect: { x: 1180, y: 330, w: 400, h: 460 }, spawn: { x: 1380, y: 740 } },
-  { id: 'skills', name: 'Skills Database', rect: { x: 1620, y: 40, w: 620, h: 400 }, spawn: { x: 1930, y: 400 } },
   { id: 'about', name: 'About + Contact', rect: { x: 1660, y: 690, w: 540, h: 360 }, spawn: { x: 1930, y: 820 } },
 ];
 
@@ -90,8 +90,8 @@ export const spines: Rect[] = [
 /** Short vertical links between the main corridor and the rooms. */
 export const connectors: Rect[] = [
   { x: 790, y: 420, w: 80, h: 120 }, // lab
-  { x: 790, y: 590, w: 80, h: 690 + GALLERY_WALL + 10 - 590 }, // archive (through its tall back wall)
-  { x: 1890, y: 420, w: 80, h: 120 }, // skills
+  { x: 790, y: 590, w: 80, h: 690 + WALL + 10 - 590 }, // skills
+  { x: 1890, y: 420, w: 80, h: 120 }, // archive
   { x: 1890, y: 590, w: 80, h: 190 }, // about (through its back wall)
 ];
 
@@ -100,10 +100,10 @@ export const corridors: Rect[] = [...spines, ...connectors];
 export const doors: Door[] = [
   { id: 'cockpit-e', rect: { x: 432, y: 520, w: 16, h: 90 }, axis: 'v', kind: 'normal' },
   { id: 'lab-s', rect: { x: 790, y: 432, w: 80, h: 16 }, axis: 'h', kind: 'transition' },
-  { id: 'gallery-n', rect: { x: 790, y: 690, w: 80, h: GALLERY_WALL }, axis: 'h', kind: 'transition' },
+  { id: 'skills-n', rect: { x: 790, y: 690, w: 80, h: WALL }, axis: 'h', kind: 'transition' },
   { id: 'hub-w', rect: { x: 1172, y: 520, w: 16, h: 90 }, axis: 'v', kind: 'normal' },
   { id: 'hub-e', rect: { x: 1572, y: 520, w: 16, h: 90 }, axis: 'v', kind: 'normal' },
-  { id: 'skills-s', rect: { x: 1890, y: 432, w: 80, h: 16 }, axis: 'h', kind: 'transition' },
+  { id: 'gallery-s', rect: { x: 1890, y: 432, w: 80, h: 16 }, axis: 'h', kind: 'transition' },
   { id: 'about-n', rect: { x: 1890, y: 690, w: 80, h: WALL }, axis: 'h', kind: 'transition' },
   { id: 'airlock', rect: { x: 2192, y: 520, w: 16, h: 90 }, axis: 'v', kind: 'airlock', locked: true },
 ];
@@ -160,21 +160,22 @@ export const interactables: Interactable[] = [
   standing('machine-heart', 'project', 'heart', 'lab', 'Heart Disease Prediction', 1072, 368, 92, 96, 'left'),
 
   // Skills Database — three terminals in a shallow arc
-  standing('terminal-code-data', 'skills', 'code-data', 'skills', 'Code & Data', 1770, 270, 70, 96),
-  standing('terminal-ml-analytics', 'skills', 'ml-analytics', 'skills', 'ML & Forecasting', 1930, 300, 70, 96),
-  standing('terminal-build-tools', 'skills', 'build-tools', 'skills', 'Build & Tools', 2090, 270, 70, 96),
+  standing('terminal-code-data', 'skills', 'code-data', 'skills', 'Code & Data', 700, 930, 70, 96),
+  standing('terminal-ml-analytics', 'skills', 'ml-analytics', 'skills', 'ML & Forecasting', 850, 900, 70, 96),
+  standing('terminal-build-tools', 'skills', 'build-tools', 'skills', 'Build & Tools', 1000, 930, 70, 96),
+  standing('joke-shelf', 'jokes', 'jokes', 'skills', 'Joke shelf', 850, 1030, 60, 108, 'right'),
 
   // About + Contact
   wallMounted('board-about', 'about', 'about', 'about', 'About Afreen', 1760, 110, 60),
   standing('terminal-contact', 'contact', 'contact', 'about', 'Contact', 2110, 960, 64, 88),
 
   // Design Archive — five framed works (four on the back wall, one on a display wall) + gallery computer
-  wallMounted('art-internship', 'poster', 'internship', 'gallery', 'Internship Experience', 632, 112, 86, 800),
-  wallMounted('art-brand', 'poster', 'brand', 'gallery', 'Personal Brand', 734, 58, 58, 770),
-  wallMounted('art-skincare', 'poster', 'skincare', 'gallery', 'Fashwash Commercial', 930, 66, 88, 796),
-  wallMounted('art-nike', 'poster', 'nike', 'gallery', 'NIKE AIR', 1044, 74, 98, 806),
-  standing('art-assignment', 'poster', 'assignment', 'gallery', 'Internship Selection Task', 652, 1012, 150, 118),
-  standing('gallery-computer', 'gallery', 'gallery', 'gallery', 'Gallery computer', 850, 968, 124, 104),
+  wallMounted('art-internship', 'poster', 'internship', 'gallery', 'Internship Experience', 1712, 112, 86, 150),
+  wallMounted('art-brand', 'poster', 'brand', 'gallery', 'Personal Brand', 1814, 58, 58, 120),
+  wallMounted('art-skincare', 'poster', 'skincare', 'gallery', 'Fashwash Commercial', 2010, 66, 88, 146),
+  wallMounted('art-nike', 'poster', 'nike', 'gallery', 'NIKE AIR', 2124, 74, 98, 156),
+  standing('art-assignment', 'poster', 'assignment', 'gallery', 'Internship Selection Task', 1758, 360, 150, 118),
+  standing('gallery-computer', 'gallery', 'gallery', 'gallery', 'Gallery computer', 1940, 334, 124, 104),
 
   // Navigation Hub — holographic globe (teleport map) and a telescope
   standing('console-nav', 'map', 'map', 'hub', 'Navigation globe', 1380, 670, 100, 124),

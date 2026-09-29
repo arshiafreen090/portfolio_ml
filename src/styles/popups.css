@@ -57,6 +57,19 @@
   padding-top: 12px; border-top: 3px dotted var(--line); font-size: 15px;
 }
 
+.jokes-popup { display: grid; gap: 12px; }
+.jokes-list {
+  display: grid; gap: 10px; margin: 0; padding: 0; list-style: none;
+}
+.jokes-list li {
+  display: grid; grid-template-columns: 28px 1fr; gap: 10px; align-items: start;
+  padding: 8px 10px;
+  border: 7px solid transparent; border-image: var(--px-lavender) 3 fill / 7px;
+}
+.jokes-list li span {
+  font: 700 12px/1 var(--font-pixel); color: var(--navy); padding-top: 2px;
+}
+
 .link-btn {
   padding: 0; font: inherit; color: var(--navy); background: none; border: 0;
   text-decoration: underline; cursor: pointer;

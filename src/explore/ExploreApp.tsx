@@ -14,6 +14,7 @@ import { GalleryViewer } from './popups/GalleryViewer';
 import { TelescopePopup } from './popups/TelescopePopup';
 import { ProjectPopup } from './popups/ProjectPopup';
 import { SkillsPopup } from './popups/SkillsPopup';
+import { JokesPopup } from './popups/JokesPopup';
 
 export type Popup = { kind: 'welcome' } | { kind: InteractKind; refId: string };
 
@@ -125,6 +126,7 @@ export function ExploreApp() {
       <WelcomeCard open={popup?.kind === 'welcome'} onClose={enterShip} onGoTo={goTo} />
       <ProjectPopup refId={popup?.kind === 'project' ? popup.refId : null} onClose={close} />
       <SkillsPopup refId={popup?.kind === 'skills' ? popup.refId : null} onClose={close} />
+      <JokesPopup open={popup?.kind === 'jokes'} onClose={close} />
       <AboutPopup open={popup?.kind === 'about'} onClose={close} />
       <ContactPopup open={popup?.kind === 'contact'} onClose={close} />
       <ArtworkPopup refId={popup?.kind === 'poster' ? popup.refId : null} onClose={close} />

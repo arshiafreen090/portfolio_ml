@@ -593,7 +593,7 @@ function drawRoomSign(ctx: Ctx, room: Room) {
   const tw = textWidth(text, 10);
   const w = tw + 28, h = 17;
   // rooms entered through their back wall keep the centre of the hull clear for the corridor
-  const offCentre = room.id === 'gallery' || room.id === 'about';
+  const offCentre = room.id === 'skills' || room.id === 'about';
   const x = offCentre ? room.rect.x + 24 : Math.round(room.rect.x + room.rect.w / 2 - w / 2);
   const y = room.rect.y - 22;
   frame(ctx, x, y, w, h, P.navy, P.navyDeep, 2, 1);

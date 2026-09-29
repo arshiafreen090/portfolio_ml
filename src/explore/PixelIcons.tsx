@@ -60,4 +60,13 @@ export const PixelIcons = {
     <rect x="7" y="9" width="2" height="2" fill="var(--navy)" /><rect x="5" y="11" width="1" height="4" fill="var(--navy)" />
     <rect x="7" y="11" width="2" height="4" fill="var(--navy)" /><rect x="10" y="11" width="1" height="4" fill="var(--navy)" />
   </>),
+  book: svg(<>
+    <rect x="2" y="3" width="6" height="10" fill="var(--navy)" />
+    <rect x="3" y="4" width="4" height="8" fill="var(--peach)" />
+    <rect x="8" y="3" width="6" height="10" fill="var(--navy)" />
+    <rect x="9" y="4" width="4" height="8" fill="var(--paper)" />
+    <rect x="7" y="3" width="1" height="10" fill="var(--navy)" />
+    <rect x="4" y="6" width="2" height="1" fill="var(--pink)" />
+    <rect x="10" y="6" width="2" height="1" fill="var(--lavender)" />
+  </>),
 };

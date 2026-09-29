@@ -54,7 +54,7 @@ export function drawEmote(ctx: Ctx, kind: Emote, x: number, y: number, age: numb
 /** Bouncing pixel chevron above whatever Tobby can interact with. */
 export function drawFocusMarker(ctx: Ctx, it: Interactable, t: number) {
   const x = Math.round(it.base.x);
-  const y = Math.round(it.base.y - it.size.h - 12 + Math.sin(t * 5) * 2);
+  const y = Math.round(it.base.y - it.size.h - 12 + Math.sin(t * 3.3) * 1.5);
   rect(ctx, x - 6, y - 5, 13, 3, P.navyDeep);
   rect(ctx, x - 4, y - 2, 9, 2, P.navyDeep);
   rect(ctx, x - 2, y, 5, 2, P.navyDeep);

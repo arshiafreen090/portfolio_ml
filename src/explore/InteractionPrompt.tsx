@@ -11,6 +11,7 @@ const VERB: Record<InteractKind, string> = {
   briefing: 'open briefing',
   gallery: 'explore',
   telescope: 'use telescope',
+  jokes: 'read jokes',
 };
 
 const KIND: Record<InteractKind, string> = {
@@ -23,11 +24,12 @@ const KIND: Record<InteractKind, string> = {
   briefing: 'Flight console',
   gallery: 'Gallery computer',
   telescope: 'Telescope',
+  jokes: 'Joke shelf',
 };
 
 const ICON: Record<InteractKind, keyof typeof PixelIcons> = {
   project: 'lab', skills: 'skills', about: 'about', contact: 'contact', poster: 'gallery', map: 'map', briefing: 'briefing',
-  gallery: 'gallery', telescope: 'telescope',
+  gallery: 'gallery', telescope: 'telescope', jokes: 'book',
 };
 
 interface Props {

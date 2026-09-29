@@ -90,8 +90,8 @@ export const THEMES: Record<RoomId, RoomTheme> = {
     wall: '#f3ebe1', wallShade: '#e2d5c6', wallTrim: P.peach, accent: P.peach, light: P.warm,
   },
   skills: {
-    floorA: '#e2e8f5', floorB: '#d8dff0', floorLine: '#c7d0e8', pattern: 'checker', tile: 24,
-    wall: '#e7edf9', wallShade: '#d2dbef', wallTrim: P.blue, accent: P.cyan, light: '#d8efff',
+    floorA: '#e8e4f3', floorB: '#ddd8ec', floorLine: '#cbc4de', pattern: 'checker', tile: 24,
+    wall: '#ece9f7', wallShade: '#d8d2eb', wallTrim: P.blue, accent: P.lavender, light: '#efe4ff',
   },
   gallery: {
     floorA: '#e8c7a3', floorB: '#e1bd97', floorLine: '#cfa47c', pattern: 'planks', tile: 16,

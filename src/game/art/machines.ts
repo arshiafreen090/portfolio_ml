@@ -243,8 +243,21 @@ export function drawBriefingConsole(ctx: Ctx, it: Interactable, on: number, t: n
 // ------------------------------------------------------------------ floor glow under screens
 
 export function drawInteractableGlow(ctx: Ctx, it: Interactable, on: number) {
-  if (it.kind === 'about' || it.kind === 'project' || (it.kind === 'poster' && !it.solid)) return;
-  const color = it.kind === 'poster' || it.kind === 'gallery' ? P.warm : it.kind === 'contact' ? P.pink : P.cyan;
-  const base = it.kind === 'map' ? 0.2 : 0.06;
-  glow(ctx, it.base.x, it.base.y + 6, it.size.w * 0.8, 16, color, base + on * 0.3);
+  const color =
+    it.kind === 'contact' ? P.pink
+      : it.kind === 'poster' || it.kind === 'gallery' ? P.warm
+        : it.kind === 'about' ? P.peach
+          : it.kind === 'jokes' ? P.warm
+          : P.cyan;
+
+  // Wall-mounted interactables need an aura around the object, not on the floor.
+  if (!it.solid) {
+    const cx = it.base.x;
+    const cy = it.base.y - it.size.h * 0.48;
+    glow(ctx, cx, cy, it.size.w * 0.62, it.size.h * 0.72, color, 0.045 + on * 0.2);
+    return;
+  }
+
+  const base = it.kind === 'map' ? 0.15 : 0.08;
+  glow(ctx, it.base.x, it.base.y + 6, it.size.w * 0.82, 16, color, base + on * 0.28);
 }

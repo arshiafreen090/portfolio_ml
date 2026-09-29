@@ -64,19 +64,19 @@ export const props: Prop[] = [
   { id: 'lab-plant-3', kind: 'plant', room: 'lab', x: 546, y: 240 },
 
   // Skills Database
-  { id: 'sk-shelf-1', kind: 'bookshelf', room: 'skills', x: 1662, y: 196 },
-  { id: 'sk-shelf-2', kind: 'bookshelf', room: 'skills', x: 2198, y: 196 },
-  { id: 'sk-plant', kind: 'plantTall', room: 'skills', x: 1648, y: 432 },
-  { id: 'sk-bag', kind: 'beanBag', room: 'skills', x: 2170, y: 405 },
-  { id: 'sk-plant-2', kind: 'plant', room: 'skills', x: 2222, y: 330 },
+  { id: 'sk-shelf-1', kind: 'bookshelf', room: 'skills', x: 582, y: 846 },
+  { id: 'sk-shelf-2', kind: 'bookshelf', room: 'skills', x: 1118, y: 846 },
+  { id: 'sk-plant', kind: 'plantTall', room: 'skills', x: 568, y: 1082 },
+  { id: 'sk-bag', kind: 'beanBag', room: 'skills', x: 1090, y: 1055 },
+  { id: 'sk-plant-2', kind: 'plant', room: 'skills', x: 1142, y: 980 },
 
   // Design Archive — design desk, bookshelf, a small sculpture, plants
-  { id: 'ga-desk', kind: 'artDesk', room: 'gallery', x: 1040, y: 910 },
-  { id: 'ga-shelf', kind: 'bookshelf', room: 'gallery', x: 1082, y: 1080 },
-  { id: 'ga-plinth', kind: 'plinth', room: 'gallery', x: 960, y: 1070 },
-  { id: 'ga-plant', kind: 'plantTall', room: 'gallery', x: 562, y: 866 },
-  { id: 'ga-plant-2', kind: 'plant', room: 'gallery', x: 560, y: 1084 },
-  { id: 'ga-plant-3', kind: 'plant', room: 'gallery', x: 1104, y: 850 },
+  { id: 'ga-desk', kind: 'artDesk', room: 'gallery', x: 2100, y: 274 },
+  { id: 'ga-shelf', kind: 'bookshelf', room: 'gallery', x: 2188, y: 426 },
+  { id: 'ga-plinth', kind: 'plinth', room: 'gallery', x: 2026, y: 426 },
+  { id: 'ga-plant', kind: 'plantTall', room: 'gallery', x: 1642, y: 216 },
+  { id: 'ga-plant-2', kind: 'plant', room: 'gallery', x: 1640, y: 434 },
+  { id: 'ga-plant-3', kind: 'plant', room: 'gallery', x: 2184, y: 200 },
 
   // About + Contact
   { id: 'ab-couch', kind: 'couch', room: 'about', x: 2072, y: 830 },
@@ -125,19 +125,18 @@ export const wallItems: WallItem[] = [
   { id: 'lab-vent', kind: 'vent', room: 'lab', x: 1098, y: 84, w: 28, h: 14 },
 
   // Skills Database
-  { id: 'sk-big', kind: 'screen', room: 'skills', x: 1830, y: 50, w: 200, h: 60, variant: 'bigdata' },
-  { id: 'sk-code', kind: 'screen', room: 'skills', x: 1730, y: 62, w: 56, h: 38, variant: 'code' },
-  { id: 'sk-chart', kind: 'screen', room: 'skills', x: 2074, y: 62, w: 56, h: 38, variant: 'chart' },
-  { id: 'sk-sc-1', kind: 'sconce', room: 'skills', x: 1806, y: 60, w: 12, h: 10 },
-  { id: 'sk-sc-2', kind: 'sconce', room: 'skills', x: 2042, y: 60, w: 12, h: 10 },
-  { id: 'sk-fan', kind: 'fan', room: 'skills', x: 2146, y: 72, w: 24, h: 24 },
+  { id: 'sk-code', kind: 'screen', room: 'skills', x: 650, y: 712, w: 56, h: 38, variant: 'code' },
+  { id: 'sk-chart', kind: 'screen', room: 'skills', x: 994, y: 712, w: 56, h: 38, variant: 'chart' },
+  { id: 'sk-sc-1', kind: 'sconce', room: 'skills', x: 726, y: 710, w: 12, h: 10 },
+  { id: 'sk-sc-2', kind: 'sconce', room: 'skills', x: 962, y: 710, w: 12, h: 10 },
+  { id: 'sk-fan', kind: 'fan', room: 'skills', x: 1066, y: 722, w: 24, h: 24 },
 
   // Design Archive — warm spotlights over the four wall-mounted works, a small supplies shelf
-  { id: 'ga-spot-1', kind: 'spot', room: 'gallery', x: 632, y: 698, w: 112, h: 100 },
-  { id: 'ga-spot-2', kind: 'spot', room: 'gallery', x: 734, y: 698, w: 58, h: 70 },
-  { id: 'ga-spot-3', kind: 'spot', room: 'gallery', x: 930, y: 698, w: 66, h: 96 },
-  { id: 'ga-spot-4', kind: 'spot', room: 'gallery', x: 1044, y: 698, w: 74, h: 106 },
-  { id: 'ga-shelf', kind: 'shelf', room: 'gallery', x: 1086, y: 744, w: 30, h: 28, variant: 'supplies' },
+  { id: 'ga-spot-1', kind: 'spot', room: 'gallery', x: 1712, y: 48, w: 112, h: 100 },
+  { id: 'ga-spot-2', kind: 'spot', room: 'gallery', x: 1814, y: 48, w: 58, h: 70 },
+  { id: 'ga-spot-3', kind: 'spot', room: 'gallery', x: 2010, y: 48, w: 66, h: 96 },
+  { id: 'ga-spot-4', kind: 'spot', room: 'gallery', x: 2124, y: 48, w: 74, h: 106 },
+  { id: 'ga-shelf', kind: 'shelf', room: 'gallery', x: 2166, y: 94, w: 30, h: 28, variant: 'supplies' },
 
   // About + Contact
   { id: 'ab-win', kind: 'window', room: 'about', x: 2000, y: 702, w: 110, h: 50 },
@@ -150,8 +149,8 @@ export const wallItems: WallItem[] = [
   { id: 'hub-sc-l', kind: 'screen', room: 'hub', x: 1226, y: 344, w: 64, h: 40, variant: 'map' },
   { id: 'hub-sc-r', kind: 'screen', room: 'hub', x: 1470, y: 344, w: 64, h: 40, variant: 'radar' },
   { id: 'hub-panel', kind: 'panel', room: 'hub', x: 1304, y: 352, w: 24, h: 30 },
-  { id: 'hub-sign-l', kind: 'sign', room: 'hub', x: 1196, y: 390, w: 124, h: 14, variant: '◀ LAB · ARCHIVE' },
-  { id: 'hub-sign-r', kind: 'sign', room: 'hub', x: 1440, y: 390, w: 124, h: 14, variant: 'SKILLS · ABOUT ▶' },
+  { id: 'hub-sign-l', kind: 'sign', room: 'hub', x: 1196, y: 390, w: 124, h: 14, variant: '◀ LAB · SKILLS' },
+  { id: 'hub-sign-r', kind: 'sign', room: 'hub', x: 1440, y: 390, w: 124, h: 14, variant: 'ARCHIVE · ABOUT ▶' },
 ];
 
 export type FloorKind = 'rug' | 'roundRug' | 'hubRings' | 'strip' | 'cable';
@@ -173,9 +172,9 @@ export const floorItems: FloorItem[] = [
   { kind: 'cable', x: 736, y: 154, w: 12, h: 90 },
   { kind: 'cable', x: 1000, y: 196, w: 12, h: 130 },
   { kind: 'strip', x: 1928, y: 360, w: 3, h: 80 },
-  { kind: 'roundRug', x: 1760, y: 248, w: 340, h: 110, color: 'blue' },
+  { kind: 'roundRug', x: 740, y: 912, w: 340, h: 110, color: 'blue' },
   // Archive: rug under the gallery computer
-  { kind: 'roundRug', x: 740, y: 912, w: 220, h: 120, color: 'peach' },
+  { kind: 'roundRug', x: 1820, y: 262, w: 220, h: 120, color: 'peach' },
   { kind: 'roundRug', x: 1790, y: 880, w: 250, h: 110, color: 'pink' },
   { kind: 'hubRings', x: 1380, y: 650, w: 150, h: 96 },
 ];

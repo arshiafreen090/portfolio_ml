@@ -328,5 +328,5 @@ export function drawWorkstation(ctx: Ctx, it: Interactable, on: number, t: numbe
 
 export function drawWorkstationGlow(ctx: Ctx, it: Interactable, on: number) {
   const c = MACHINE_COLOR[it.refId as ProjectId].main;
-  glow(ctx, it.base.x, it.base.y + 6, it.size.w * 0.75, 16, c, 0.06 + on * 0.3);
+  glow(ctx, it.base.x, it.base.y + 6, it.size.w * 0.75, 16, c, 0.1 + on * 0.28);
 }

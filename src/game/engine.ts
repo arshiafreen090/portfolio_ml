@@ -16,7 +16,7 @@ import {
   drawAboutBoard, drawBriefingConsole, drawContactTerminal, drawGlobe, drawInteractableGlow, drawSkillTerminal,
 } from './art/machines';
 import { drawWorkstation, drawWorkstationGlow } from './art/workstations';
-import { drawProp } from './art/props';
+import { drawBookshelfInteractable, drawProp } from './art/props';
 import { buildShell, type ShellArt } from './art/shell';
 import { SpaceBackdrop, vignette } from './art/space';
 import { P, THEMES } from './art/theme';
@@ -298,6 +298,11 @@ export class Engine {
     }
   }
 
+  private roomInteractables(room: RoomId | null) {
+    if (!room) return [] as Interactable[];
+    return interactables.filter((it) => it.room === room);
+  }
+
   private clampCamera() {
     const { w, h, zoom } = this.view;
     const hw = w / zoom / 2, hh = h / zoom / 2, m = 150;
@@ -422,7 +427,21 @@ export class Engine {
     for (const item of sorted) item.draw();
 
     if (this.emote) drawEmote(ctx, this.emote.kind, this.tobby.x, this.tobby.y - 78, this.emote.age, this.emote.life);
-    if (this.focus && !this.paused) drawFocusMarker(ctx, this.focus, t);
+    if (!this.paused && this.room) {
+      const markers = this.roomInteractables(this.room).filter((it) => this.inView(this.boundsOf(it), 90));
+      for (let i = 0; i < markers.length; i++) {
+        const it = markers[i];
+        const d = Math.hypot(this.tobby.x - it.base.x, this.tobby.y - it.base.y);
+        const near = Math.max(0, Math.min(1, 1 - d / 360));
+        const alpha = 0.22 + near * 0.78;
+        ctx.save();
+        ctx.globalAlpha = alpha;
+        drawFocusMarker(ctx, it, t + i * 0.45);
+        ctx.restore();
+      }
+    } else if (!this.paused && this.focus) {
+      drawFocusMarker(ctx, this.focus, t);
+    }
 
     ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
     vignette(ctx, w, h);
@@ -456,6 +475,7 @@ export class Engine {
     switch (it.kind) {
       case 'project': drawWorkstation(ctx, it, on, t); break;
       case 'skills': drawSkillTerminal(ctx, it, on, t); break;
+      case 'jokes': drawBookshelfInteractable(ctx, it.base.x, it.base.y, on, t); break;
       case 'contact': drawContactTerminal(ctx, it, on, t); break;
       case 'about': drawAboutBoard(ctx, it, on, this.image(assetManifest.avatar)); break;
       case 'map': drawGlobe(ctx, it, on, this.calm ? 0 : t); break;
